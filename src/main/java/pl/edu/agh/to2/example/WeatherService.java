@@ -1,11 +1,12 @@
 package pl.edu.agh.to2.example;
 
 import pl.edu.agh.to2.example.model.Weather;
-import pl.edu.agh.to2.example.model.WeatherForecast;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WeatherService {
     private final String apiKey;
@@ -25,7 +26,7 @@ public class WeatherService {
         return parseCurrentWeather(response);
     }
 
-    public WeatherForecast getForecastWeather(String city, int days) throws Exception {
+    public List<Weather> getForecastWeather(String city, int days) throws Exception {
         String endpoint = "/forecast.json";
         String url = this.basicUrl + endpoint + "?key" + this.apiKey + "&q=" + city + "&days=" + days + "aqi=no&alerts=no";
         String response = getWeatherResponse(url);
@@ -40,6 +41,7 @@ public class WeatherService {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == 200) {
+            System.out.println(response.body());
             return response.body();
         } else {
             throw new Exception("Error with getting response from an API: " + response.statusCode());
@@ -52,7 +54,7 @@ public class WeatherService {
     }
 
     // TODO
-    private WeatherForecast parseForecastWeather(String response) {
-        return new WeatherForecast();
+    private List<Weather> parseForecastWeather(String response) {
+        return new ArrayList<>();
     }
 }
