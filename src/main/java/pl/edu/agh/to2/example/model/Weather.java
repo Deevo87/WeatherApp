@@ -1,7 +1,5 @@
 package pl.edu.agh.to2.example.model;
 
-import pl.edu.agh.to2.example.WeatherService;
-
 public class Weather {
     private String date;
     private double temperature;

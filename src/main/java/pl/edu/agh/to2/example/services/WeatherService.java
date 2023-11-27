@@ -1,6 +1,7 @@
-package pl.edu.agh.to2.example;
+package pl.edu.agh.to2.example.services;
 
 import org.json.JSONArray;
+import pl.edu.agh.to2.example.ConnectionData;
 import pl.edu.agh.to2.example.model.Weather;
 
 import java.net.http.HttpClient;
@@ -96,7 +97,6 @@ public class WeatherService {
                 weathers.add(weather);
             }
         }
-
         return weathers;
     }
 }

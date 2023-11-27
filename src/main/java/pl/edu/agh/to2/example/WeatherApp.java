@@ -1,6 +1,8 @@
 package pl.edu.agh.to2.example;
 
+import Gui.App;
 import javafx.application.Application;
+import pl.edu.agh.to2.example.services.WeatherService;
 
 import java.util.logging.Logger;
 
