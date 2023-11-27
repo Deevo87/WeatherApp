@@ -1,10 +1,19 @@
 package pl.edu.agh.to2.example.model;
 
+import pl.edu.agh.to2.example.WeatherService;
+
 public class Weather {
     private String date;
     private double temperature;
     private double feelsLikeTemperature;
     private String condition; // for example: Light rain
+
+    public Weather(String date, double temperature, double feelsLikeTemperature, String condition){
+        this.date = date;
+        this.temperature = temperature;
+        this.feelsLikeTemperature = feelsLikeTemperature;
+        this.condition = condition;
+    }
 
     public String getDate() {
         return date;

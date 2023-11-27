@@ -11,7 +11,9 @@ public class WeatherApp {
 	public static void main(String[] args) throws Exception {
 		log.info("Hello world");
 		WeatherService weatherService = new WeatherService();
-		weatherService.getCurrentWeather("Cracow");
+		System.out.println(weatherService.getCurrentWeather("Cracow"));
+		System.out.println(weatherService.getForecastWeather("Cracow", 2));
+
 		Application.launch(App.class);
 	}
 }
