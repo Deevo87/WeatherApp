@@ -1,21 +1,20 @@
 package pl.edu.agh.to2.example;
 
-import Gui.App;
 import javafx.application.Application;
-import pl.edu.agh.to2.example.services.WeatherService;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import java.util.logging.Logger;
+import java.io.IOException;
 
-public class WeatherApp {
+public class WeatherApp extends Application  {
+    @Override
+    public void start(Stage primaryStage) throws IOException {
 
-	private static final Logger log = Logger.getLogger(WeatherApp.class.toString());
+        FXMLLoader root = new FXMLLoader(getClass().getResource("/view/form.fxml"));
+        Scene scene = new Scene(root.load(), 618, 300);
 
-	public static void main(String[] args) throws Exception {
-		log.info("Hello world");
-		WeatherService weatherService = new WeatherService();
-		System.out.println(weatherService.getCurrentWeather("Cracow"));
-		System.out.println(weatherService.getForecastWeather("Cracow", 2));
-
-		Application.launch(App.class);
-	}
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
 }
