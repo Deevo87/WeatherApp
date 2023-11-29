@@ -18,8 +18,7 @@ public class Weather {
 
     private LocalDateTime parseStringDate(String dateToParse){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd [H][HH]:mm");
-        LocalDateTime parsedDateTime = LocalDateTime.parse(dateToParse, formatter);
-        return parsedDateTime;
+        return LocalDateTime.parse(dateToParse, formatter);
     }
 
     public LocalDateTime getDate() {
