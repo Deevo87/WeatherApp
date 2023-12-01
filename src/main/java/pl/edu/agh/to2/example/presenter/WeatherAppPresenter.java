@@ -21,12 +21,15 @@ public class WeatherAppPresenter {
     @FXML
     private Text conditionField;
 
-    WeatherService weatherService = new WeatherService();
+    private final WeatherService weatherService;
+
+    public WeatherAppPresenter(WeatherService weatherService) {
+        this.weatherService = weatherService;
+    }
 
     @FXML
     private void handleCheckWeatherAction(ActionEvent event){
         updateCurrentWeather();
-        //moze tu obsluga bledu zlego miasta
     }
 
     private void updateCurrentWeather(){

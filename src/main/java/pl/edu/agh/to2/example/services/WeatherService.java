@@ -1,6 +1,7 @@
 package pl.edu.agh.to2.example.services;
 
 import org.json.JSONArray;
+import org.springframework.stereotype.Service;
 import pl.edu.agh.to2.example.ConnectionData;
 import pl.edu.agh.to2.example.model.Weather;
 
@@ -9,6 +10,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
+@Service
 public class WeatherService {
     private final String apiKey;
     private final String basicUrl;
