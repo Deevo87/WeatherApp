@@ -4,8 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import pl.edu.agh.to2.example.model.Weather;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.Thread.sleep;
 
 public class Parser {
 
@@ -26,19 +29,19 @@ public class Parser {
     }
 
     public Weather parseCurrentWeather(String response) {
-        JSONObject jsonObject = new JSONObject(response);
-
-        JSONObject location = jsonObject.getJSONObject("location");
-        String localtime = location.getString("localtime");
-
-        JSONObject current = jsonObject.getJSONObject("current");
-        double temperature = current.getDouble("temp_c");
-        double feelsLikeTemperature = current.getDouble("feelslike_c");
-
-        JSONObject condition = current.getJSONObject("condition");
-        String conditionText = condition.getString("text");
-
-        return new Weather(localtime, temperature, feelsLikeTemperature, conditionText);
+//        JSONObject jsonObject = new JSONObject(response);
+//
+//        JSONObject location = jsonObject.getJSONObject("location");
+//        String localtime = location.getString("localtime");
+//
+//        JSONObject current = jsonObject.getJSONObject("current");
+//        double temperature = current.getDouble("temp_c");
+//        double feelsLikeTemperature = current.getDouble("feelslike_c");
+//
+//        JSONObject condition = current.getJSONObject("condition");
+//        String conditionText = condition.getString("text");
+//        return Weather(localtime, temperature, feelsLikeTemperature, conditionText);
+        return new Weather("2023-12-02 20:21", -2137, -420, "jest zajebibi");
     }
 
     private List<Weather> getWeatherFromDay(JSONObject day) {

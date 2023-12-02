@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import "./CurrentWeatherPage.css";
 import Button from "@mui/material/Button";
@@ -7,9 +7,10 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { GetCurrentWeather } from "../../services/currentWeatherService";
+import { Weather } from "../../interfaces/Weather";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -31,38 +32,79 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(name: string, data: string) {
-  return { name, data };
-}
-
-const rows = [
-  createData("Weather for", "city"),
-  createData("Date", "date"),
-  createData("Preceived Temperature", "precTemp"),
-  createData("Temperature", "temp"),
-  createData("Condition", "cond"),
+const labels: [string, keyof Weather][] = [
+  ["Weather for", "city"],
+  ["Date", "date"],
+  ["Perceived Temperature", "feelsLikeTemperature"],
+  ["Temperature", "temperature"],
+  ["Condition", "condition"],
 ];
 
 export const CurrentWeatherPage = () => {
+  const [city, setCity] = useState("");
+  const [disabledBtn, setDisabledBtn] = useState(true);
+  const [weather, setWeather] = useState<any>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const handleCityChange = (event: any) => {
+    setCity(event.target.value);
+    setDisabledBtn(city === "");
+  };
+
+  const convertObject = (
+    inputObj: Weather,
+    mappings: [string, keyof Weather][]
+  ) => {
+    const convertedArray = [];
+
+    for (const [label, key] of mappings) {
+      const value = inputObj[key];
+      convertedArray.push([label, value]);
+    }
+    return convertedArray;
+  };
+
+  const handleBtnChange = async (event: any) => {
+    await GetCurrentWeather(city)
+      .then((data: Weather) => {
+        let convertedData = convertObject(data, labels);
+        setWeather(convertedData);
+        setIsLoaded(true);
+      })
+      .catch((err) => {
+        console.log("Error while setting weather in currentWeatherPage " + err);
+      });
+  };
+
   return (
     <div className="main">
       <div className="inputForm">
         <p>Choose city</p>
-        <TextField id="outlined-basic" label="City" variant="outlined" />
+        <TextField
+          id="outlined-basic"
+          label="City"
+          variant="outlined"
+          onChange={handleCityChange}
+        />
       </div>
       <div className="searchBtn">
-        <Button variant="contained">Search</Button>
+        <Button
+          disabled={disabledBtn}
+          variant="contained"
+          onClick={handleBtnChange}
+        >
+          Search
+        </Button>
       </div>
-      <div className="displayForm">
+      <div className={`displayForm ${isLoaded ? "" : "disabledForm"}`}>
         <TableContainer className="tablecoint" component={Paper}>
           <Table aria-label="customized table">
             <TableBody>
-              {rows.map((row) => (
-                <StyledTableRow key={row.name}>
+              {weather.map((row: any) => (
+                <StyledTableRow key={row[0]}>
                   <StyledTableCell component="th" scope="row">
-                    {row.name}
+                    {row[0]}
                   </StyledTableCell>
-                  <StyledTableCell align="center">{row.data}</StyledTableCell>
+                  <StyledTableCell align="center">{row[1]}</StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>

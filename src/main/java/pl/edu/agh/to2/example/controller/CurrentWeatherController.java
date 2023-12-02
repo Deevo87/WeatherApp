@@ -21,4 +21,12 @@ public class CurrentWeatherController {
         return "Technologie obiektowe";
     }
 
+    @GetMapping("/currentWeather/{city}")
+    public Weather getCurrentWeather(@PathVariable String city) {
+        try {
+            return weatherService.getCurrentWeather(city);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
