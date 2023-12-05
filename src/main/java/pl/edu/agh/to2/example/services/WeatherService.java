@@ -3,6 +3,7 @@ package pl.edu.agh.to2.example.services;
 import org.json.JSONArray;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.to2.example.ConnectionData;
+import pl.edu.agh.to2.example.WeatherAppException;
 import pl.edu.agh.to2.example.model.Weather;
 
 import java.net.http.HttpClient;
@@ -42,10 +43,9 @@ public class WeatherService {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == 200) {
-            System.out.println(response.body());
             return response.body();
         } else {
-            throw new Exception("Error with getting response from an API: " + response.statusCode());
+            throw new WeatherAppException("Error with getting response from an API: " + response.statusCode());
         }
     }
 }
