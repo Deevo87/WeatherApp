@@ -9,6 +9,7 @@ export const GetCurrentWeather = async (city: string): Promise<Weather> => {
     .then((response) => response.json())
     .then((data: Weather) => {
       weather = data;
+        console.log(weather)
       weather.city = city;
       loading = false;
       return weather;

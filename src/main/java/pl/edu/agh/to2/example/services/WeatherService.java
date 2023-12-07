@@ -1,9 +1,8 @@
 package pl.edu.agh.to2.example.services;
 
-import org.json.JSONArray;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.to2.example.ConnectionData;
-import pl.edu.agh.to2.example.WeatherAppException;
+import pl.edu.agh.to2.example.exceptions.WeatherAppException;
 import pl.edu.agh.to2.example.model.Weather;
 
 import java.net.http.HttpClient;

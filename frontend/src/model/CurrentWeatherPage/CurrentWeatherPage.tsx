@@ -36,7 +36,8 @@ const labels: [string, keyof Weather][] = [
   ["Date", "date"],
   ["Perceived Temperature", "feelsLikeTemperature"],
   ["Temperature", "temperature"],
-  ["Condition", "condition"],
+  ["Condition", "precipitation"],
+  ["Wind", "windStrength"]
 ];
 
 export const CurrentWeatherPage = () => {

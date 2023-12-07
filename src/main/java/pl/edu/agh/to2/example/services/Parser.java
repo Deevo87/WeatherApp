@@ -3,12 +3,8 @@ package pl.edu.agh.to2.example.services;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import pl.edu.agh.to2.example.model.Weather;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.lang.Thread.sleep;
 
 public class Parser {
 
@@ -36,11 +32,14 @@ public class Parser {
 
         JSONObject current = jsonObject.getJSONObject("current");
         double temperature = current.getDouble("temp_c");
-        double feelsLikeTemperature = current.getDouble("feelslike_c");
+
+        double windVelocityInKph = current.getDouble("wind_kph");
+
+        double precipitationAmount = current.getDouble("precip_mm");
 
         JSONObject condition = current.getJSONObject("condition");
         String conditionText = condition.getString("text");
-        return new Weather(localtime, temperature, feelsLikeTemperature, conditionText);
+        return new Weather(localtime, temperature , conditionText, windVelocityInKph, precipitationAmount);
     }
 
     private List<Weather> getWeatherFromDay(JSONObject day) {
@@ -55,11 +54,12 @@ public class Parser {
     private Weather getWeatherFromHour(JSONObject hour) {
         String time = hour.getString("time");
         double temperature = hour.getDouble("temp_c");
-        double feelsLikeTemperature = hour.getDouble("feelslike_c");
 
+        double windVelocityInKph = hour.getDouble("wind_kph");
+        double precipitationAmount = hour.getDouble("precip_mm");
         JSONObject condition = hour.getJSONObject("condition");
         String conditionText = condition.getString("text");
 
-        return new Weather(time, temperature, feelsLikeTemperature, conditionText);
+        return new Weather(time, temperature, conditionText, windVelocityInKph, precipitationAmount);
     }
 }
