@@ -2,10 +2,19 @@ package pl.edu.agh.to2.example.services;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
+import pl.edu.agh.to2.example.exceptions.RainClassifyingException;
+import pl.edu.agh.to2.example.exceptions.SnowClassifyingException;
+import pl.edu.agh.to2.example.exceptions.TemperatureException;
+import pl.edu.agh.to2.example.exceptions.WindClassifyingException;
 import pl.edu.agh.to2.example.model.Weather;
+import pl.edu.agh.to2.example.responses.WeatherMapper;
+import pl.edu.agh.to2.example.responses.WeatherResponse;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class Parser {
 
     public Parser() {
@@ -24,7 +33,7 @@ public class Parser {
         return weathersForEachDay;
     }
 
-    public Weather parseCurrentWeather(String response) {
+    public WeatherResponse parseCurrentWeather(String response) throws WindClassifyingException, TemperatureException, RainClassifyingException, SnowClassifyingException {
         JSONObject jsonObject = new JSONObject(response);
 
         JSONObject location = jsonObject.getJSONObject("location");
@@ -39,7 +48,7 @@ public class Parser {
 
         JSONObject condition = current.getJSONObject("condition");
         String conditionText = condition.getString("text");
-        return new Weather(localtime, temperature , conditionText, windVelocityInKph, precipitationAmount);
+        return new WeatherMapper().createWeatherResponse(new Weather(localtime, temperature , conditionText, windVelocityInKph, precipitationAmount));
     }
 
     private List<Weather> getWeatherFromDay(JSONObject day) {

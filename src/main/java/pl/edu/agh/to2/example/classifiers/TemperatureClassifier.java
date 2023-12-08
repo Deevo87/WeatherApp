@@ -12,7 +12,7 @@ public class TemperatureClassifier {
     static {
         temperatureCategories.put(-31.0, "Extremely Cold");
         temperatureCategories.put(-15.0, "Very Cold");
-        temperatureCategories.put(0.0, "Cool");
+        temperatureCategories.put(0.0, "Cold");
         temperatureCategories.put(10.0, "Warm");
         temperatureCategories.put(30.0, "Hot");
         temperatureCategories.put(40.0, "Extremely Hot");

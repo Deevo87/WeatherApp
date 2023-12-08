@@ -20,7 +20,6 @@ public class Weather {
     private double feelsLikeTemperature;
     private final String condition; // for example: Light rain
     private final double windVelocityInKph;
-
     private final double precipitationAmount;
 
     public Weather(String date, double temperature, String condition, double windVelocityInKph, double precipitationAmount){
@@ -45,7 +44,7 @@ public class Weather {
     }
 
     public double getFeelsLikeTemperature() {
-        double v016 = Math.pow(temperature, 0.16);
+        double v016 = Math.pow(windVelocityInKph, 0.16);
         int scale = 10;
         this.feelsLikeTemperature = (double) Math.round((13.12 + 0.6215 * temperature - 11.37 * v016 + 0.3965 * temperature * v016) * scale) / scale;
         return feelsLikeTemperature;

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pl.edu.agh.to2.example.ConnectionData;
 import pl.edu.agh.to2.example.exceptions.WeatherAppException;
 import pl.edu.agh.to2.example.model.Weather;
+import pl.edu.agh.to2.example.responses.WeatherResponse;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -23,7 +24,7 @@ public class WeatherService {
         this.httpClient = HttpClient.newHttpClient();
     }
 
-    public Weather getCurrentWeather(String city) throws Exception {
+    public WeatherResponse getCurrentWeather(String city) throws Exception {
         String endpoint = "/current.json";
         String url = this.basicUrl + endpoint + "?key=" + this.apiKey + "&q=" + city + "&aqi=no";
         return this.parser.parseCurrentWeather(getWeatherResponse(url));
