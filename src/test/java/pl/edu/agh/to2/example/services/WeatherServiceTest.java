@@ -13,9 +13,9 @@ class WeatherServiceTest {
     @Test
     void testGetCurrentWeather() throws Exception {
         // given
-        String city = "Cracow";
-        WeatherService service = new WeatherService();
-        LocalDateTime time = LocalDateTime.now();
+//        String city = "Cracow";
+//        WeatherService service = new WeatherService();
+//        LocalDateTime time = LocalDateTime.now();
 
         // when
 //        Weather weather = service.getCurrentWeather(city);
@@ -30,9 +30,9 @@ class WeatherServiceTest {
     @Test
     void testGetForecastWeather() throws Exception {
         // given
-        String city = "Warsaw";
-        WeatherService service = new WeatherService();
-        LocalDateTime time = LocalDateTime.now();
+//        String city = "Warsaw";
+//        WeatherService service = new WeatherService();
+//        LocalDateTime time = LocalDateTime.now();
 
         // when
 //        List<Weather> weathers = service.getForecastWeather(city, 3);

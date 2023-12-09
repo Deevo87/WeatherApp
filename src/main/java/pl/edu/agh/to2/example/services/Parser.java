@@ -8,8 +8,8 @@ import pl.edu.agh.to2.example.exceptions.SnowClassifyingException;
 import pl.edu.agh.to2.example.exceptions.TemperatureException;
 import pl.edu.agh.to2.example.exceptions.WindClassifyingException;
 import pl.edu.agh.to2.example.model.Weather;
-import pl.edu.agh.to2.example.responses.WeatherMapper;
-import pl.edu.agh.to2.example.responses.WeatherResponse;
+import pl.edu.agh.to2.example.DTOs.WeatherDTOMapper;
+import pl.edu.agh.to2.example.DTOs.WeatherDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,10 @@ import java.util.List;
 @Service
 public class Parser {
 
-    public Parser() {
+    private final WeatherDTOMapper weatherDTOMapper;
+
+    public Parser(WeatherDTOMapper weatherDTOMapper) {
+        this.weatherDTOMapper = weatherDTOMapper;
     }
 
     public List<List<Weather>> parseForecastWeather(String response) {
@@ -33,7 +36,7 @@ public class Parser {
         return weathersForEachDay;
     }
 
-    public WeatherResponse parseCurrentWeather(String response) throws WindClassifyingException, TemperatureException, RainClassifyingException, SnowClassifyingException {
+    public Weather parseCurrentWeather(String response) throws WindClassifyingException, TemperatureException, RainClassifyingException, SnowClassifyingException {
         JSONObject jsonObject = new JSONObject(response);
 
         JSONObject location = jsonObject.getJSONObject("location");
@@ -48,19 +51,24 @@ public class Parser {
 
         JSONObject condition = current.getJSONObject("condition");
         String conditionText = condition.getString("text");
-        return new WeatherMapper().createWeatherResponse(new Weather(localtime, temperature , conditionText, windVelocityInKph, precipitationAmount));
+        return new Weather(localtime, temperature , conditionText, windVelocityInKph, precipitationAmount);
     }
 
     private List<Weather> getWeatherFromDay(JSONObject day) {
         JSONArray hours = day.getJSONArray("hour");
         List<Weather> weathers = new ArrayList<>();
         hours.forEach((hour) -> {
-            weathers.add(getWeatherFromHour((JSONObject) hour));
+            try {
+                weathers.add(getWeatherFromHour((JSONObject) hour));
+            } catch (WindClassifyingException | TemperatureException | RainClassifyingException |
+                     SnowClassifyingException e) {
+                throw new RuntimeException(e);
+            }
         });
         return weathers;
     }
 
-    private Weather getWeatherFromHour(JSONObject hour) {
+    private Weather getWeatherFromHour(JSONObject hour) throws WindClassifyingException, TemperatureException, RainClassifyingException, SnowClassifyingException {
         String time = hour.getString("time");
         double temperature = hour.getDouble("temp_c");
 

@@ -23,4 +23,16 @@ public class RainClassifier {
         }
         throw new RainClassifyingException("Couldn't classify rain by precipitation.");
     }
+
+    public static int compareRainIntensity(String rain1, String rain2) {
+        if (rain1.equals(rain2)) return 0;
+        for (Map.Entry<Double, String> entry : rainCategories.entrySet()) {
+            if (entry.getValue().equals(rain1)) {
+                return 1;
+            } else if (entry.getValue().equals(rain2)) {
+                return -1;
+            }
+        }
+        return 0;
+    }
 }

@@ -1,15 +1,15 @@
-package pl.edu.agh.to2.example.responses;
+package pl.edu.agh.to2.example.DTOs;
 
 import java.time.LocalDateTime;
 
-public class WeatherResponse {
+public class WeatherDTO {
     private final LocalDateTime date;
     private final String temperature;
     private final double feelsLikeTemperature;
     private final String windStrength;
     private final String precipitation;
 
-    public WeatherResponse(LocalDateTime date, String temperature, double feelsLikeTemperature, String windStrength, String precipitation) {
+    public WeatherDTO(LocalDateTime date, String temperature, double feelsLikeTemperature, String windStrength, String precipitation) {
         this.date = date;
         this.temperature = temperature;
         this.feelsLikeTemperature = feelsLikeTemperature;

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.edu.agh.to2.example.exceptions.WeatherAppException;
-import pl.edu.agh.to2.example.responses.WeatherResponse;
+import pl.edu.agh.to2.example.DTOs.WeatherDTO;
 import pl.edu.agh.to2.example.services.WeatherService;
 
 @RestController
@@ -17,13 +17,9 @@ public class CurrentWeatherController {
         this.weatherService = weatherService;
     }
 
-    @GetMapping()
-    public String greeting() {
-        return "Technologie obiektowe";
-    }
 
     @GetMapping("/currentWeather/{city}")
-    public WeatherResponse getCurrentWeather(@PathVariable String city) throws WeatherAppException {
+    public WeatherDTO getCurrentWeather(@PathVariable String city) throws WeatherAppException {
         try {
             return weatherService.getCurrentWeather(city);
         } catch (Exception e) {

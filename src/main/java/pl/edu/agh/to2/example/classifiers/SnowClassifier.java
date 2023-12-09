@@ -25,4 +25,16 @@ public class SnowClassifier {
         }
         throw new SnowClassifyingException("Couldn't classify snowy by precipitation.");
     }
+
+    public static int compareSnowIntensity(String snow1, String snow2) {
+        if (snow1.equals(snow2)) return 0;
+        for (Map.Entry<Double, String> entry : snowCategories.entrySet()) {
+            if (entry.getValue().equals(snow1)) {
+                return 1;
+            } else if (entry.getValue().equals(snow2)) {
+                return -1;
+            }
+        }
+        return 0;
+    }
 }

@@ -50,7 +50,7 @@ public class Weather {
         return feelsLikeTemperature;
     }
 
-    private String getCondition() {
+    public String getCondition() {
         return condition;
     }
 
@@ -58,11 +58,11 @@ public class Weather {
         return classifyWind(windVelocityInKph);
     }
 
-    private String getRainStrength() throws RainClassifyingException {
+    public String getRainStrength() throws RainClassifyingException {
         return classifyRain(precipitationAmount);
     }
 
-    private String getSnowStrength() throws SnowClassifyingException {
+    public String getSnowStrength() throws SnowClassifyingException {
         return classifySnow(precipitationAmount);
     }
 
@@ -72,6 +72,18 @@ public class Weather {
         }
         if (temperature <= 0.0) return getSnowStrength();
         return getRainStrength();
+    }
+
+    public double getWindVelocityInKph() {
+        return windVelocityInKph;
+    }
+
+    public double getPrecipitationAmount() {
+        return precipitationAmount;
+    }
+
+    public double getTemperatureDouble() {
+        return temperature;
     }
 
     @Override
