@@ -31,3 +31,17 @@
 .disabledForm {
   display: none;
 }
+
+.displayedAlert{
+  padding-top: 20px;
+  margin: auto;
+  width: 60%;
+}
+
+.disabledAlert{
+  display: none
+}
+
+
+
+

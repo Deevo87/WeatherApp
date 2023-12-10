@@ -9,6 +9,8 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import { GetCurrentWeather } from "../../services/currentWeatherService";
 import { Weather } from "../../interfaces/Weather";
 
@@ -45,9 +47,22 @@ export const CurrentWeatherPage = () => {
   const [disabledBtn, setDisabledBtn] = useState(true);
   const [weather, setWeather] = useState<any>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isError, setIsError] = useState(false);
+
   const handleCityChange = (event: any) => {
-    setCity(event.target.value);
-    setDisabledBtn(city === "");
+    const value = event.target.value
+
+    // Regular expression for city or latitude and longitude validation
+    const regex = /^[a-zA-Z\sżźćńółęąśŻŹĆĄŚĘŁÓŃ-]+$|^-?([0-9]|[1-8][0-9]|90)(\.\d+)?,-?((0|[1-9][0-9]?|1[0-7][0-9]|180)(\.\d+)?|180)$/;
+
+    if (regex.test(value)) {
+      setCity(value);
+      setIsError(false); // Hide error message if input is valid
+      setDisabledBtn(false);
+    } else {
+      setIsError(true); // Display error message for invalid input
+      setDisabledBtn(true);
+    }
   };
 
   const convertObject = (
@@ -86,6 +101,15 @@ export const CurrentWeatherPage = () => {
           onChange={handleCityChange}
         />
       </div>
+
+      <div className={`${isError ? "displayedAlert" : "disabledAlert"}`}>
+        <Alert severity="error">
+          <AlertTitle>Wrong input</AlertTitle>
+          Please enter a valid city name or valid latitude and longitude (from -90 to 90 for latitude and -180 to 180 for longitude), separated by a comma (e.g., 48.8567,2.3508)
+        </Alert>
+      </div>
+
+
       <div className="searchBtn">
         <Button
           disabled={disabledBtn}

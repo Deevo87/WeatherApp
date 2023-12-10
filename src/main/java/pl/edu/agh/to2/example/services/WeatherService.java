@@ -9,9 +9,11 @@ import pl.edu.agh.to2.example.exceptions.WeatherAppException;
 import pl.edu.agh.to2.example.model.Weather;
 import pl.edu.agh.to2.example.DTOs.WeatherDTO;
 
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import static java.lang.Math.min;
@@ -40,7 +42,8 @@ public class WeatherService {
 
     public WeatherDTO getCurrentWeather(String city) throws Exception {
         String endpoint = "/current.json";
-        String url = this.basicUrl + endpoint + "?key=" + this.apiKey + "&q=" + city + "&aqi=no";
+        String url = this.basicUrl + endpoint + "?key=" + this.apiKey + "&q=" +
+                URLEncoder.encode(city, StandardCharsets.UTF_8.toString()) + "&aqi=no";
         return weatherDTOMapper.createWeatherResponse(this.parser.parseCurrentWeather(getWeatherResponse(url)));
     }
 

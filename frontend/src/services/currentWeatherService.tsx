@@ -14,4 +14,5 @@ export const GetCurrentWeather = async (city: string): Promise<Weather> => {
       loading = false;
       return weather;
     });
+
 };
