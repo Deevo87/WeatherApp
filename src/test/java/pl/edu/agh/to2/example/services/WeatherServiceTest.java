@@ -1,43 +1,35 @@
 package pl.edu.agh.to2.example.services;
 
 import org.junit.jupiter.api.Test;
-import pl.edu.agh.to2.example.model.Weather;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import pl.edu.agh.to2.example.DTOs.WeatherDTO;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 class WeatherServiceTest {
+
+    @Autowired
+    WeatherService service;
 
     @Test
     void testGetCurrentWeather() throws Exception {
-        // given
-//        String city = "Cracow";
-//        WeatherService service = new WeatherService();
-//        LocalDateTime time = LocalDateTime.now();
+        //given
+        String city = "Cracow";
+        LocalDateTime time = LocalDateTime.now();
 
-        // when
-//        Weather weather = service.getCurrentWeather(city);
+        //when
+        WeatherDTO weather = service.getCurrentWeather(city);
 
-        // then
-//        assertEquals(time.getDayOfMonth(), weather.getDate().getDayOfMonth());
-//        assertEquals(time.getMonth(), weather.getDate().getMonth());
-//        assertEquals(time.getYear(), weather.getDate().getYear());
+        //then
+        assertEquals(time.getDayOfMonth(), weather.getDate().getDayOfMonth());
+        assertEquals(time.getMonth(), weather.getDate().getMonth());
+        assertEquals(time.getYear(), weather.getDate().getYear());
+
+        assertTrue(true);
     }
 
-    //wont work, it should be fixed someday XD
-    @Test
-    void testGetForecastWeather() throws Exception {
-        // given
-//        String city = "Warsaw";
-//        WeatherService service = new WeatherService();
-//        LocalDateTime time = LocalDateTime.now();
-
-        // when
-//        List<Weather> weathers = service.getForecastWeather(city, 3);
-
-        // then
-//        assertEquals(time.getDayOfMonth(), weathers.get(0).getDate().getDayOfMonth());
-    }
 }

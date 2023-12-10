@@ -8,7 +8,8 @@ public class ForecastWeatherDTOMapper {
 
     public ForecastWeatherDTOMapper(){}
 
-    public ForecastWeatherDTO createForecastWeatherResponse(LocalDateTime date, String temperature, double feelsLikeTemperature, String windStrength, String rainStrength, String snowStrength) {
+    public ForecastWeatherDTO createForecastWeatherResponse(LocalDateTime date, String temperature, double feelsLikeTemperature,
+                                                            String windStrength, String rainStrength, String snowStrength) {
         return new ForecastWeatherDTO(
                 date,
                 temperature,

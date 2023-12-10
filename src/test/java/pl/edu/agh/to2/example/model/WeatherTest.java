@@ -14,20 +14,19 @@ public class WeatherTest {
         // given
         String date = "2023-10-28 12:40";
         double temperature = 21.3;
-        double feelsLikeTemperature = 22.7;
         String condition = "Light rain";
         double windVelocityInKph = 6.1;
+        double precipitationAmount = 1.1;
 
         // when
-//        Weather weather = new Weather(date, temperature, condition, windVelocityInKph);
+        Weather weather = new Weather(date, temperature, condition, windVelocityInKph, precipitationAmount);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd [H][HH]:mm");
         LocalDateTime expectedDate = LocalDateTime.parse(date, formatter);
 
         // then
-//        assertEquals(expectedDate, weather.getDate());
-//        assertEquals(temperature, weather.getTemperature());
-//        assertEquals(feelsLikeTemperature, weather.getFeelsLikeTemperature());
-//        assertEquals(condition, weather.getCondition());
+        assertEquals(expectedDate, weather.getDate());
+        assertEquals(temperature, weather.getTemperatureDouble());
+        assertEquals(condition, weather.getCondition());
     }
 }
