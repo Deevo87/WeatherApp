@@ -1,4 +1,4 @@
-package pl.edu.agh.to2.example.DTOs;
+package pl.edu.agh.to2.example.dtos;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,6 @@ import pl.edu.agh.to2.example.exceptions.SnowClassifyingException;
 import pl.edu.agh.to2.example.exceptions.TemperatureException;
 import pl.edu.agh.to2.example.exceptions.WindClassifyingException;
 import pl.edu.agh.to2.example.model.Weather;
-import pl.edu.agh.to2.example.services.Parser;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package pl.edu.agh.to2.example.DTOs;
+package pl.edu.agh.to2.example.dtos;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

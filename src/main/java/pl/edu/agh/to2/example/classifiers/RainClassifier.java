@@ -8,6 +8,10 @@ import java.util.TreeMap;
 public class RainClassifier {
     private static final Map<Double, String> rainCategories = new TreeMap<>();
 
+    private RainClassifier() {
+        throw new IllegalStateException("Utility class");
+    }
+
     static {
         rainCategories.put(2.5, "Light Rain");
         rainCategories.put(7.6, "Moderate Rain");

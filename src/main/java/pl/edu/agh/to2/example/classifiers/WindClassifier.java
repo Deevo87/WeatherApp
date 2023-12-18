@@ -8,6 +8,9 @@ import java.util.TreeMap;
 public class WindClassifier {
     private static final Map<Double, String> windCategories = new TreeMap<>();
 
+    private WindClassifier() {
+        throw new IllegalStateException("Utility class");
+    }
     static {
         windCategories.put(1.0, "Calm");
         windCategories.put(6.0, "Light Air");

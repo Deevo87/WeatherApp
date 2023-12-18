@@ -8,20 +8,13 @@ import pl.edu.agh.to2.example.exceptions.SnowClassifyingException;
 import pl.edu.agh.to2.example.exceptions.TemperatureException;
 import pl.edu.agh.to2.example.exceptions.WindClassifyingException;
 import pl.edu.agh.to2.example.model.Weather;
-import pl.edu.agh.to2.example.DTOs.WeatherDTOMapper;
-import pl.edu.agh.to2.example.DTOs.WeatherDTO;
+import pl.edu.agh.to2.example.dtos.WeatherDTOMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class Parser {
-
-    private final WeatherDTOMapper weatherDTOMapper;
-
-    public Parser(WeatherDTOMapper weatherDTOMapper) {
-        this.weatherDTOMapper = weatherDTOMapper;
-    }
 
     public List<List<Weather>> parseForecastWeather(String response) {
         List<List<Weather>> weathersForEachDay = new ArrayList<>();
@@ -30,13 +23,13 @@ public class Parser {
         JSONObject forecast = jsonObject.getJSONObject("forecast");
         JSONArray forecastDaysArray = forecast.getJSONArray("forecastday");
 
-        forecastDaysArray.forEach((day) -> {
-           weathersForEachDay.add(getWeatherFromDay((JSONObject) day));
-        });
+        forecastDaysArray.forEach(day ->
+           weathersForEachDay.add(getWeatherFromDay((JSONObject) day))
+        );
         return weathersForEachDay;
     }
 
-    public Weather parseCurrentWeather(String response) throws WindClassifyingException, TemperatureException, RainClassifyingException, SnowClassifyingException {
+    public Weather parseCurrentWeather(String response) {
         JSONObject jsonObject = new JSONObject(response);
 
         JSONObject location = jsonObject.getJSONObject("location");
@@ -57,7 +50,7 @@ public class Parser {
     private List<Weather> getWeatherFromDay(JSONObject day) {
         JSONArray hours = day.getJSONArray("hour");
         List<Weather> weathers = new ArrayList<>();
-        hours.forEach((hour) -> {
+        hours.forEach(hour -> {
             try {
                 weathers.add(getWeatherFromHour((JSONObject) hour));
             } catch (WindClassifyingException | TemperatureException | RainClassifyingException |

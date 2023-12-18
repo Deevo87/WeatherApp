@@ -1,4 +1,4 @@
-package pl.edu.agh.to2.example.DTOs;
+package pl.edu.agh.to2.example.dtos;
 
 import org.springframework.stereotype.Service;
 import pl.edu.agh.to2.example.exceptions.RainClassifyingException;
@@ -13,8 +13,6 @@ import java.util.List;
 
 @Service
 public class WeatherDTOMapper {
-
-    public WeatherDTOMapper() {}
 
     public WeatherDTO createWeatherResponse(Weather weather) throws TemperatureException, WindClassifyingException, RainClassifyingException, SnowClassifyingException {
        return new WeatherDTO(

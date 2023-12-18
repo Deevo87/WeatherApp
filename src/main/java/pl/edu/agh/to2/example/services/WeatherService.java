@@ -2,13 +2,14 @@ package pl.edu.agh.to2.example.services;
 
 import org.springframework.stereotype.Service;
 import pl.edu.agh.to2.example.ConnectionData;
-import pl.edu.agh.to2.example.DTOs.ForecastWeatherDTO;
-import pl.edu.agh.to2.example.DTOs.ForecastWeatherDTOMapper;
-import pl.edu.agh.to2.example.DTOs.WeatherDTOMapper;
+import pl.edu.agh.to2.example.dtos.ForecastWeatherDTO;
+import pl.edu.agh.to2.example.dtos.ForecastWeatherDTOMapper;
+import pl.edu.agh.to2.example.dtos.WeatherDTOMapper;
 import pl.edu.agh.to2.example.exceptions.WeatherAppException;
 import pl.edu.agh.to2.example.model.Weather;
-import pl.edu.agh.to2.example.DTOs.WeatherDTO;
+import pl.edu.agh.to2.example.dtos.WeatherDTO;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -47,13 +48,13 @@ public class WeatherService {
         return weatherDTOMapper.createWeatherResponse(this.parser.parseCurrentWeather(getWeatherResponse(url)));
     }
 
-    private List<List<Weather>> getForecastWeather(String city, int days) throws Exception {
+    private List<List<Weather>> getForecastWeather(String city, int days) throws WeatherAppException, IOException, InterruptedException {
         String endpoint = "/forecast.json";
         String url = this.basicUrl + endpoint + "?key=" + this.apiKey + "&q=" + city + "&days=" + days + "&aqi=no&alerts=no";
         return this.parser.parseForecastWeather(getWeatherResponse(url));
     }
 
-    private String getWeatherResponse(String url) throws Exception {
+    private String getWeatherResponse(String url) throws WeatherAppException, IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(java.net.URI.create(url))
                 .build();

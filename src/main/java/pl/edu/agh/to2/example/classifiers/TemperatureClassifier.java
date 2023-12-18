@@ -9,6 +9,10 @@ public class TemperatureClassifier {
 
     private final static Map<Double, String> temperatureCategories = new TreeMap<>();
 
+    private TemperatureClassifier() {
+        throw new IllegalStateException("Utility class");
+    }
+
     static {
         temperatureCategories.put(-31.0, "Extremely Cold");
         temperatureCategories.put(-15.0, "Very Cold");

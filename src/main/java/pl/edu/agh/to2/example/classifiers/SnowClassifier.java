@@ -9,6 +9,10 @@ public class SnowClassifier {
 
     private static final Map<Double, String> snowCategories = new TreeMap<>();
 
+    private SnowClassifier() {
+        throw new IllegalStateException("Utility class");
+    }
+
     static {
         snowCategories.put(1.0, "Very Light Snow");
         snowCategories.put(5.0, "Light Snow");
