@@ -1,19 +1,33 @@
 package pl.edu.agh.to2.example.model;
 
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Weather {
-    private LocalDateTime date;
-    private double temperature;
-    private double feelsLikeTemperature;
-    private String condition; // for example: Light rain
+import pl.edu.agh.to2.example.exceptions.RainClassifyingException;
+import pl.edu.agh.to2.example.exceptions.SnowClassifyingException;
+import pl.edu.agh.to2.example.exceptions.TemperatureException;
+import pl.edu.agh.to2.example.exceptions.WindClassifyingException;
 
-    public Weather(String date, double temperature, double feelsLikeTemperature, String condition){
+import static pl.edu.agh.to2.example.classifiers.RainClassifier.classifyRain;
+import static pl.edu.agh.to2.example.classifiers.SnowClassifier.classifySnow;
+import static pl.edu.agh.to2.example.classifiers.TemperatureClassifier.classifyTemperature;
+import static pl.edu.agh.to2.example.classifiers.WindClassifier.classifyWind;
+
+public class Weather {
+    private final LocalDateTime date;
+    private final double temperature;
+    private double feelsLikeTemperature;
+    private final String condition; // for example: Light rain
+    private final double windVelocityInKph;
+    private final double precipitationAmount;
+
+    public Weather(String date, double temperature, String condition, double windVelocityInKph, double precipitationAmount){
         this.date = parseStringDate(date);
         this.temperature = temperature;
-        this.feelsLikeTemperature = feelsLikeTemperature;
         this.condition = condition;
+        this.windVelocityInKph = windVelocityInKph;
+        this.precipitationAmount = precipitationAmount;
     }
 
     private LocalDateTime parseStringDate(String dateToParse){
@@ -25,32 +39,51 @@ public class Weather {
         return date;
     }
 
-    public void setDate(String date) {
-        this.date = parseStringDate(date);
-    }
-
-    public double getTemperature() {
-        return temperature;
-    }
-
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
+    public String getTemperature() throws TemperatureException {
+        return classifyTemperature(temperature);
     }
 
     public double getFeelsLikeTemperature() {
+        double v016 = Math.pow(windVelocityInKph, 0.16);
+        int scale = 10;
+        this.feelsLikeTemperature = (double) Math.round((13.12 + 0.6215 * temperature - 11.37 * v016 + 0.3965 * temperature * v016) * scale) / scale;
         return feelsLikeTemperature;
-    }
-
-    public void setFeelsLikeTemperature(double feelsLikeTemperature) {
-        this.feelsLikeTemperature = feelsLikeTemperature;
     }
 
     public String getCondition() {
         return condition;
     }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
+    public String getWindStrength() throws WindClassifyingException {
+        return classifyWind(windVelocityInKph);
+    }
+
+    public String getRainStrength() throws RainClassifyingException {
+        return classifyRain(precipitationAmount);
+    }
+
+    public String getSnowStrength() throws SnowClassifyingException {
+        return classifySnow(precipitationAmount);
+    }
+
+    public String getPrecipitation() throws SnowClassifyingException, RainClassifyingException {
+        if (precipitationAmount == 0) {
+            return "Lack of any precipitation.";
+        }
+        if (temperature <= 0.0) return getSnowStrength();
+        return getRainStrength();
+    }
+
+    public double getWindVelocityInKph() {
+        return windVelocityInKph;
+    }
+
+    public double getPrecipitationAmount() {
+        return precipitationAmount;
+    }
+
+    public double getTemperatureDouble() {
+        return temperature;
     }
 
     @Override

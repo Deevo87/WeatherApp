@@ -1,0 +1,59 @@
+.inputForm {
+  margin: auto;
+  width: 70%;
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+}
+
+.searchBtn {
+  margin: auto;
+  width: 50%;
+  text-align: center;
+  padding-top: 2rem;
+}
+
+.displayForm {
+  margin: auto;
+  width: 30%;
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+.values {
+  padding-left: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.disabledForm {
+  display: none;
+}
+
+.displayedAlert {
+  padding-top: 20px;
+  margin: auto;
+  width: 60%;
+}
+
+.disabledAlert {
+  display: none;
+}
+
+p {
+  padding: 0 1rem 0;
+}
+
+TabPanel {
+  display: flex;
+  justify-content: space-around;
+}
+
+.displayData {
+}
+
+.disableData {
+  display: none;
+}
