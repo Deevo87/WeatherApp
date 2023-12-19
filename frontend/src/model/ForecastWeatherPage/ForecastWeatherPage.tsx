@@ -165,10 +165,10 @@ export const ForecastWeatherPage = () => {
           variant="outlined"
           onChange={handleStartLocChange}
         />
-        <p>Choose destiantion location</p>
+        <p>Choose destination location</p>
         <TextField
           id="outlined-basic"
-          label="Destiantion"
+          label="Destination"
           variant="outlined"
           onChange={handleDestLocChange}
         />

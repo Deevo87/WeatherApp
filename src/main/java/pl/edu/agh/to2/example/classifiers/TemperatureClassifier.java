@@ -7,7 +7,7 @@ import java.util.TreeMap;
 
 public class TemperatureClassifier {
 
-    private final static Map<Double, String> temperatureCategories = new TreeMap<>();
+    private static final Map<Double, String> temperatureCategories = new TreeMap<>();
 
     private TemperatureClassifier() {
         throw new IllegalStateException("Utility class");
