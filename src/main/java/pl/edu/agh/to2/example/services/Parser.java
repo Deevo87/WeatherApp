@@ -8,7 +8,6 @@ import pl.edu.agh.to2.example.exceptions.SnowClassifyingException;
 import pl.edu.agh.to2.example.exceptions.TemperatureException;
 import pl.edu.agh.to2.example.exceptions.WindClassifyingException;
 import pl.edu.agh.to2.example.model.Weather;
-import pl.edu.agh.to2.example.dtos.WeatherDTOMapper;
 
 import java.util.ArrayList;
 import java.util.List;

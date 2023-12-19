@@ -2,24 +2,23 @@ package pl.edu.agh.to2.example.services;
 
 import org.springframework.stereotype.Service;
 import pl.edu.agh.to2.example.ConnectionData;
-import pl.edu.agh.to2.example.dtos.ForecastWeatherDTO;
-import pl.edu.agh.to2.example.dtos.ForecastWeatherDTOMapper;
-import pl.edu.agh.to2.example.dtos.WeatherDTOMapper;
-import pl.edu.agh.to2.example.exceptions.WeatherAppException;
+import pl.edu.agh.to2.example.DTOs.ForecastWeatherDTO;
+import pl.edu.agh.to2.example.DTOs.ForecastWeatherDTOMapper;
+import pl.edu.agh.to2.example.DTOs.WeatherDTO;
+import pl.edu.agh.to2.example.DTOs.WeatherDTOMapper;
+import pl.edu.agh.to2.example.exceptions.*;
 import pl.edu.agh.to2.example.model.Weather;
-import pl.edu.agh.to2.example.dtos.WeatherDTO;
 
-import java.io.IOException;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import static java.lang.Math.min;
 import static java.lang.Math.max;
 import static pl.edu.agh.to2.example.classifiers.RainClassifier.compareRainIntensity;
+import static pl.edu.agh.to2.example.classifiers.SnowClassifier.compareSnowIntensity;
 import static pl.edu.agh.to2.example.classifiers.TemperatureClassifier.classifyTemperature;
 import static pl.edu.agh.to2.example.classifiers.WindClassifier.classifyWind;
 
@@ -32,6 +31,13 @@ public class WeatherService {
     private final WeatherDTOMapper weatherDTOMapper;
     private final ForecastWeatherDTOMapper forecastWeatherDTOMapper;
 
+    private final List<List<Integer>> combinedHoursIntervals = new ArrayList<>() {{
+        add(Arrays.asList(0, 5));
+        add(Arrays.asList(6, 11));
+        add(Arrays.asList(12, 17));
+        add(Arrays.asList(18, 23));
+    }};
+
     public WeatherService(Parser parser, WeatherDTOMapper weatherDTOMapper, ForecastWeatherDTOMapper forecastWeatherDTOMapper) {
         this.parser = parser;
         this.weatherDTOMapper = weatherDTOMapper;
@@ -43,18 +49,17 @@ public class WeatherService {
 
     public WeatherDTO getCurrentWeather(String city) throws Exception {
         String endpoint = "/current.json";
-        String url = this.basicUrl + endpoint + "?key=" + this.apiKey + "&q=" +
-                URLEncoder.encode(city, StandardCharsets.UTF_8.toString()) + "&aqi=no";
+        String url = this.basicUrl + endpoint + "?key=" + this.apiKey + "&q=" + city + "&aqi=no";
         return weatherDTOMapper.createWeatherResponse(this.parser.parseCurrentWeather(getWeatherResponse(url)));
     }
 
-    private List<List<Weather>> getForecastWeather(String city, int days) throws WeatherAppException, IOException, InterruptedException {
+    private List<List<Weather>> getForecastWeather(String city, int days) throws Exception {
         String endpoint = "/forecast.json";
         String url = this.basicUrl + endpoint + "?key=" + this.apiKey + "&q=" + city + "&days=" + days + "&aqi=no&alerts=no";
         return this.parser.parseForecastWeather(getWeatherResponse(url));
     }
 
-    private String getWeatherResponse(String url) throws WeatherAppException, IOException, InterruptedException {
+    private String getWeatherResponse(String url) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(java.net.URI.create(url))
                 .build();
@@ -67,33 +72,65 @@ public class WeatherService {
         }
     }
 
+    private List<Weather> makeHourInterval(List<Weather> startLoc, List<Weather> endLoc, int start, int end) {
+        List<Weather> result = new ArrayList<>();
+
+        result.addAll(
+                startLoc.subList(start, end)
+        );
+        result.addAll(
+                endLoc.subList(start, end)
+        );
+
+        return result;
+    }
+
+    private ForecastWeatherDTO combineWeathers(List<Weather> weathers) throws RainClassifyingException, SnowClassifyingException, WindClassifyingException, TemperatureException {
+        String worstRain = weathers.get(3).getRainStrength();
+        double lowestFeelsLikeTemp = weathers.get(3).getFeelsLikeTemperature();
+        double lowestTemp = weathers.get(3).getTemperatureDouble();
+        String worstSnow = weathers.get(3).getSnowStrength();
+        double worstWind = weathers.get(3).getWindVelocityInKph();
+
+        for (Weather weather : weathers) {
+            worstRain = switch(compareRainIntensity(worstRain, weather.getRainStrength())) {
+                case 1 -> worstRain;
+                default -> weather.getRainStrength();
+            };
+            worstSnow = switch(compareSnowIntensity(worstSnow, weather.getSnowStrength())) {
+                case 1 -> worstSnow;
+                default -> weather.getSnowStrength();
+            };
+            worstWind = max(worstWind, weather.getWindVelocityInKph());
+            lowestTemp = min(lowestTemp, weather.getTemperatureDouble());
+            lowestFeelsLikeTemp = min(lowestFeelsLikeTemp, weather.getFeelsLikeTemperature());
+        }
+        return forecastWeatherDTOMapper.createForecastWeatherResponse(
+                weathers.get(3).getDate(),
+                classifyTemperature(lowestTemp),
+                lowestFeelsLikeTemp,
+                classifyWind(worstWind),
+                worstRain,
+                worstSnow
+        );
+    }
+
     public List<List<ForecastWeatherDTO>> getTripConditions(String startLocation, String destinationLocation, int days) throws Exception {
         List<List<Weather>> forecastWeatherForStartLoc = getForecastWeather(startLocation, days);
         List<List<Weather>> forecastWeatherForDestLoc = getForecastWeather(destinationLocation, days);
         List<List<ForecastWeatherDTO>> tripForecast = new ArrayList<>();
         for (int i = 0; i < forecastWeatherForDestLoc.size(); i++) {
             List<ForecastWeatherDTO> day = new ArrayList<>();
-            for (int j = 0; j < forecastWeatherForDestLoc.get(0).size(); j++) {
-                Weather startLoc = forecastWeatherForStartLoc.get(i).get(j);
-                Weather destLoc = forecastWeatherForDestLoc.get(i).get(j);
-                String rainIntensity = switch(compareRainIntensity(startLoc.getRainStrength(), destLoc.getRainStrength())) {
-                    case 1 -> startLoc.getRainStrength();
-                    case -1 -> destLoc.getRainStrength();
-                    default -> startLoc.getRainStrength();
-                };
-                String snowIntensity = switch(compareRainIntensity(startLoc.getRainStrength(), destLoc.getRainStrength())) {
-                    case 1 -> startLoc.getSnowStrength();
-                    case -1 -> destLoc.getSnowStrength();
-                    default -> startLoc.getSnowStrength();
-                };
-                day.add(forecastWeatherDTOMapper.createForecastWeatherResponse(
-                        startLoc.getDate(),
-                        classifyTemperature(min(startLoc.getTemperatureDouble(), destLoc.getTemperatureDouble())),
-                        min(startLoc.getFeelsLikeTemperature(), destLoc.getFeelsLikeTemperature()),
-                        classifyWind(max(startLoc.getWindVelocityInKph(), destLoc.getWindVelocityInKph())),
-                        rainIntensity,
-                        snowIntensity
-                ));
+
+            for (List<Integer> interval: combinedHoursIntervals) {
+                List<Weather> combinedHours;
+                combinedHours = makeHourInterval(
+                        forecastWeatherForStartLoc.get(i),
+                        forecastWeatherForDestLoc.get(i),
+                        interval.get(0),
+                        interval.get(1)
+                );
+                day.add(combineWeathers(combinedHours));
             }
             tripForecast.add(day);
         }

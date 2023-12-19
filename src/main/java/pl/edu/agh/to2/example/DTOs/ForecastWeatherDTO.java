@@ -1,4 +1,4 @@
-package pl.edu.agh.to2.example.dtos;
+package pl.edu.agh.to2.example.DTOs;
 
 import java.time.LocalDateTime;
 

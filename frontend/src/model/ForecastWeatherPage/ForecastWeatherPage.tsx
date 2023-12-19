@@ -4,10 +4,7 @@ import "./ForecastWeatherPage.css";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import { ForecastWeather } from "../../interfaces/ForecastWeather";
 import { GetForecastWeather } from "../../services/forecastWeatherService";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -96,10 +93,8 @@ export const ForecastWeatherPage = () => {
 
   const handleStartLocChange = (event: any) => {
     const value = event.target.value;
-    console.log(value);
     validate(value);
     setStartLoc(value);
-    console.log(startLoc);
   };
 
   const handleDestLocChange = (event: any) => {
@@ -110,9 +105,7 @@ export const ForecastWeatherPage = () => {
 
   const handleDaysChange = (event: any) => {
     let tmp = event.target.value;
-    console.log(typeof tmp);
     if (parseInt(tmp) > 0) {
-      console.log(tmp);
       setDays(tmp);
       setDisabledBtn(false);
     } else {
@@ -135,21 +128,11 @@ export const ForecastWeatherPage = () => {
     await GetForecastWeather(startLoc, destLoc, days)
       .then((data: any) => {
         forecast = data;
-        console.log(data);
-        // let convertedData = convertObject(data, labels);
         setForecastData(data);
-        console.log("in then");
-        console.log(forecastData);
       })
       .catch((err) => {
         console.log("Error while setting weather in currentWeatherPage " + err);
       });
-    console.log("halo");
-    console.log("forecastData");
-    console.log(forecast);
-    // forecast.map((element: any, index: any) =>
-    //   element.map((data: any, dataIndex: any) => console.log(data))
-    // );
     setLoadingData(false);
     console.log(loadingData);
   };

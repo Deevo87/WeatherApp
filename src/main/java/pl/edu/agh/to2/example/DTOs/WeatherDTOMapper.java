@@ -1,4 +1,4 @@
-package pl.edu.agh.to2.example.dtos;
+package pl.edu.agh.to2.example.DTOs;
 
 import org.springframework.stereotype.Service;
 import pl.edu.agh.to2.example.exceptions.RainClassifyingException;

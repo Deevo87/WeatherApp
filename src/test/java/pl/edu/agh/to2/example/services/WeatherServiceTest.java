@@ -3,7 +3,7 @@ package pl.edu.agh.to2.example.services;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pl.edu.agh.to2.example.dtos.WeatherDTO;
+import pl.edu.agh.to2.example.DTOs.WeatherDTO;
 
 import java.time.LocalDateTime;
 

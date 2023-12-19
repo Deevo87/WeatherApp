@@ -3,6 +3,8 @@ package pl.edu.agh.to2.example.dtos;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import pl.edu.agh.to2.example.DTOs.ForecastWeatherDTO;
+import pl.edu.agh.to2.example.DTOs.ForecastWeatherDTOMapper;
 import pl.edu.agh.to2.example.exceptions.RainClassifyingException;
 import pl.edu.agh.to2.example.exceptions.SnowClassifyingException;
 import pl.edu.agh.to2.example.exceptions.TemperatureException;
