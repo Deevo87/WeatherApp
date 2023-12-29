@@ -1,12 +1,24 @@
-.inputForm {
-  margin: auto;
-  width: 70%;
-  text-align: center;
+.searchingForm {
   display: flex;
-  justify-content: space-around;
+  flex-direction: row;
 }
 
-.searchBtn {
+.tripContainer {
+  flex: 2;
+}
+
+.inputForm {
+  flex: 4;
+  margin: auto;
+  width: 90%;
+  padding-right: 10%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.btn {
   margin: auto;
   width: 50%;
   text-align: center;
@@ -56,4 +68,25 @@ TabPanel {
 
 .disableData {
   display: none;
+}
+
+.status500 {
+  margin: auto;
+  text-align: center;
+}
+
+.buttons {
+  margin: auto;
+  padding-bottom: 2rem;
+  width: 30%;
+  display: flex;
+  flex-direction: row;
+}
+
+.savedTrips {
+  padding-left: 5%;
+}
+
+p {
+  padding: 0;
 }
