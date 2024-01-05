@@ -6,5 +6,5 @@ export interface ForecastWeather {
   windStrength: string;
   snowStrength: string;
   rainStrength: string;
-  isMud: boolean;
+  isMud: string;
 }

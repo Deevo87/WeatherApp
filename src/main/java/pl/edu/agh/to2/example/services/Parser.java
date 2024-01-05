@@ -22,9 +22,8 @@ public class Parser {
         JSONObject forecast = jsonObject.getJSONObject("forecast");
         JSONArray forecastDaysArray = forecast.getJSONArray("forecastday");
 
-
         forecastDaysArray.forEach(day ->
-           weathersForEachDay.add(getWeatherFromDay((JSONObject) day))
+                weathersForEachDay.add(getWeatherFromDay((JSONObject) day))
         );
         return weathersForEachDay;
     }

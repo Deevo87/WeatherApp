@@ -163,15 +163,16 @@ export const ForecastWeatherPage = () => {
     };
 
     const handleBtnChange = async (event: any) => {
-
         await GetForecastWeather(startLoc, destLoc, days)
             .then((data: any) => {
+                console.log(data)
                 if (data.status === 500) {
                     setStatus(data.status)
                 } else {
                     setStatus(undefined)
                 }
                 setForecastData(data);
+                //console.log(data)
             })
             .catch((err) => {
                 console.log("Error while setting weather in currentWeatherPage " + err);
@@ -211,10 +212,10 @@ export const ForecastWeatherPage = () => {
                                         <CardContent>
                                             <Typography variant="h5">Date: {data.date}</Typography>
                                             <Typography variant="body2">
-                                                Preceived Temperature: {data.feelsLikeTemperature}
+                                                Perceived Temperature: {data.feelsLikeTemperature}
                                             </Typography>
                                             <Typography variant="body2">
-                                                Temeperature: {data.temperature}
+                                                Temperature: {data.temperature}
                                             </Typography>
                                             <Typography variant="body2">
                                                 Wind: {data.windStrength}

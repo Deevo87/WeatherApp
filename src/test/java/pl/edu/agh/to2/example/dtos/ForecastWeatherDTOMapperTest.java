@@ -37,7 +37,7 @@ public class ForecastWeatherDTOMapperTest {
         //when
         ForecastWeatherDTO forecastWeatherDTO = forecastWeatherDTOMapper.createForecastWeatherResponse(weather.getDate(),
                 weather.getTemperature(), weather.getFeelsLikeTemperature(), weather.getWindStrength(), weather.getRainStrength(),
-                weather.getSnowStrength());
+                weather.getSnowStrength(), "Yes");
 
         //then
         assertEquals("Warm", forecastWeatherDTO.getTemperature());
@@ -45,4 +45,4 @@ public class ForecastWeatherDTOMapperTest {
         assertEquals("Light Rain", forecastWeatherDTO.getRainStrength());
         assertEquals(localDateTime, forecastWeatherDTO.getDate());
 
-}}
+    }}

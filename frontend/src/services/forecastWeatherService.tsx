@@ -11,6 +11,7 @@ export const GetForecastWeather = async (
         .then((response) => response.json())
         .then((data: any) => {
             forecastWeather = data;
+            console.log(forecastWeather)
             return forecastWeather;
         });
 };
