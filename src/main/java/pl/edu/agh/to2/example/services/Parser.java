@@ -22,10 +22,20 @@ public class Parser {
         JSONObject forecast = jsonObject.getJSONObject("forecast");
         JSONArray forecastDaysArray = forecast.getJSONArray("forecastday");
 
+
         forecastDaysArray.forEach(day ->
            weathersForEachDay.add(getWeatherFromDay((JSONObject) day))
         );
         return weathersForEachDay;
+    }
+
+    public int parseMud(String response) {
+        JSONObject jsonObject = new JSONObject(response);
+        JSONObject forecast = jsonObject.getJSONObject("forecast");
+        JSONArray forecastDay = forecast.getJSONArray("forecastday");
+        JSONObject firstDay = forecastDay.getJSONObject(0);
+        JSONObject dayObject = firstDay.getJSONObject("day");
+        return dayObject.getInt("daily_will_it_rain");
     }
 
     public Weather parseCurrentWeather(String response) {
