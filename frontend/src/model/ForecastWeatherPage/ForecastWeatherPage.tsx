@@ -99,27 +99,27 @@ export const ForecastWeatherPage = () => {
         /^[a-zA-Z\sżźćńółęąśŻŹĆĄŚĘŁÓŃ-]+$|^-?([0-9]|[1-8][0-9]|90)(\.\d+)?,-?((0|[1-9][0-9]?|1[0-7][0-9]|180)(\.\d+)?|180)$/;
 
     useEffect(() => {
-        // GetSavedTrips()
-        //     .then((data: any) => {
-        //         setSavedTrips(data)
-        //         setTripsStatus(data.status)
-        //     })
-        //     .catch((err) => {
-        //         console.log("Error while getting saved trips " + err);
-        //     })
-        const tmp = [
-            {
-                startLoc: 'Cracow',
-                destLoc: 'Warsaw',
-                days: 2
-            },
-            {
-                startLoc: "Gdańsk",
-                destLoc: "Lublin",
-                days: 1
-            }
-        ]
-        setSavedTrips(tmp)
+        GetSavedTrips()
+            .then((data: any) => {
+                setSavedTrips(data)
+                setTripsStatus(data.status)
+            })
+            .catch((err) => {
+                console.log("Error while getting saved trips " + err);
+            })
+        // const tmp = [
+        //     {
+        //         startLoc: 'Cracow',
+        //         destLoc: 'Warsaw',
+        //         days: 2
+        //     },
+        //     {
+        //         startLoc: "Gdańsk",
+        //         destLoc: "Lublin",
+        //         days: 1
+        //     }
+        // ]
+        // setSavedTrips(tmp)
         // setLoadingTrips(false)
     }, [])
 
