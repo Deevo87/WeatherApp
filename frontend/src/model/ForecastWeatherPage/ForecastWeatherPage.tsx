@@ -89,7 +89,7 @@ export const ForecastWeatherPage = () => {
     const [tripsStatus, setTripsStatus] = useState(undefined)
     const [loadingTrips, setLoadingTrips] = useState(true)
     const [value, setValue] = React.useState(0);
-
+    const [savingTrip, setSavingTrip] = useState(false)
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
@@ -107,25 +107,13 @@ export const ForecastWeatherPage = () => {
             .catch((err) => {
                 console.log("Error while getting saved trips " + err);
             })
-        // const tmp = [
-        //     {
-        //         startLoc: 'Cracow',
-        //         destLoc: 'Warsaw',
-        //         days: 2
-        //     },
-        //     {
-        //         startLoc: "Gdańsk",
-        //         destLoc: "Lublin",
-        //         days: 1
-        //     }
-        // ]
-        // setSavedTrips(tmp)
-        // setLoadingTrips(false)
-    }, [])
+        setLoadingTrips(false)
+    }, [savingTrip])
 
     useEffect(() => {
         areBtnsDisabled();
     }, [days, destLoc, startLoc]);
+
 
     const handleStartLocChange = (event: any) => {
         const value = event.target.value;
@@ -185,8 +173,8 @@ export const ForecastWeatherPage = () => {
             destLoc: destLoc,
             days: days
         }
-        console.log(trip)
         await SaveTrip(trip)
+        setSavingTrip(!savingTrip)
     }
 
     const handleSearchSavedBtn = (trip: any) => {
@@ -285,7 +273,7 @@ export const ForecastWeatherPage = () => {
         <div className="main">
             <div className="searchingForm">
                 <div className="tripContainer">
-                    {loadingTrips && renderTrips()}
+                    {!loadingTrips && renderTrips()}
                 </div>
                 <div className="inputForm">
                     <p>Choose starting location</p>
