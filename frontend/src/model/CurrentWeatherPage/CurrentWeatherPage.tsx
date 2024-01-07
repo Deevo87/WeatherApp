@@ -93,7 +93,7 @@ export const CurrentWeatherPage = () => {
 
   return (
     <div className="main">
-      <div className="inputForm">
+      <div className="chooseCity">
         <p>Choose city</p>
         <TextField
           id="outlined-basic"
