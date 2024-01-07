@@ -227,7 +227,7 @@ export const ForecastWeatherPage = () => {
                                                 Rain: {data.rainStrength}
                                             </Typography>
                                             <Typography variant="body2">
-                                                Mud: {data.isMud}
+                                                Mud: {data.mud}
                                             </Typography>
                                         </CardContent>
                                     </Box>

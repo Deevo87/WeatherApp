@@ -62,23 +62,17 @@ public class WeatherService {
         return this.parser.parseForecastWeather(getWeatherResponse(url));
     }
 
-    private boolean getHistoryWeather(String city) throws Exception {
+    private boolean getHistoryWeather(String city, int daysBefore) throws Exception {
+        String endpoint = "/history.json";
+
         LocalDate currentDate = LocalDate.now();
-        LocalDate yesterdayDate = currentDate.minusDays(1);
-        LocalDate beforeYesterdayDate = currentDate.minusDays(1);
+        LocalDate beforeDate = currentDate.minusDays(daysBefore);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String yesterday = yesterdayDate.format(formatter);
-        String beforeYesterday = beforeYesterdayDate.format(formatter);
+        String before = beforeDate.format(formatter);
 
-        String endpoint = "/history.json";
-        String urlYesterday = this.basicUrl + endpoint + "?key=" + this.apiKey + "&q=" + city + "&dt=" + yesterday;
-        String urlBeforeYesterday = this.basicUrl + endpoint + "?key=" + this.apiKey + "&q=" + city + "&dt=" + beforeYesterday;
-
-        boolean isMudFromYesterday = (this.parser.parseMud(getWeatherResponse(urlYesterday)) != 0);
-        boolean isMudFromBeforeYesterday = (this.parser.parseMud(getWeatherResponse(urlBeforeYesterday)) != 0);
-
-        return (isMudFromYesterday || isMudFromBeforeYesterday);
+        String url = this.basicUrl + endpoint + "?key=" + this.apiKey + "&q=" + city + "&dt=" + before;
+        return this.parser.parseMud(getWeatherResponse(url)) != 0;
     }
 
     private String getWeatherResponse(String url) throws Exception {
@@ -107,7 +101,7 @@ public class WeatherService {
         return result;
     }
 
-    private ForecastWeatherDTO combineWeathers(List<Weather> weathers, String mud) throws RainClassifyingException, SnowClassifyingException, WindClassifyingException, TemperatureException {
+    private ForecastWeatherDTO combineWeathers(List<Weather> weathers, boolean mud) throws RainClassifyingException, SnowClassifyingException, WindClassifyingException, TemperatureException {
         String worstRain = weathers.get(3).getRainStrength();
         double lowestFeelsLikeTemp = weathers.get(3).getFeelsLikeTemperature();
         double lowestTemp = weathers.get(3).getTemperatureDouble();
@@ -139,15 +133,8 @@ public class WeatherService {
     }
 
     public List<List<ForecastWeatherDTO>> getTripConditions(String startLocation, String destinationLocation, int days) throws Exception {
-
-        boolean isMud = getHistoryWeather(startLocation) || getHistoryWeather(destinationLocation);
-        String val = new String();
-        if (isMud) {
-            val = "Yes";
-        }
-        else {
-            val = "No";
-        }
+        String[] cities = {startLocation, destinationLocation};
+        boolean isMud = isMud(cities);
 
         List<List<Weather>> forecastWeatherForStartLoc = getForecastWeather(startLocation, days);
         List<List<Weather>> forecastWeatherForDestLoc = getForecastWeather(destinationLocation, days);
@@ -163,7 +150,7 @@ public class WeatherService {
                         interval.get(0),
                         interval.get(1)
                 );
-                day.add(combineWeathers(combinedHours, val));
+                day.add(combineWeathers(combinedHours, isMud));
             }
             tripForecast.add(day);
         }
@@ -171,5 +158,17 @@ public class WeatherService {
                 tripForecast
         );
         return tripForecast;
+    }
+
+    private boolean isMud(String[] cities) throws Exception {
+        int days = 2;
+        for(int daysBehind = 1; daysBehind < days + 1; daysBehind++) {
+            for(String city: cities) {
+                if (getHistoryWeather(city, daysBehind)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
