@@ -7,14 +7,14 @@ import pl.edu.agh.to2.example.exceptions.WindClassifyingException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class WindClassifierTest {
+class WindClassifierTest {
     @Test
     void testClassifyRain() throws RainClassifyingException, TemperatureException, WindClassifyingException {
 
         //given
-        Double windCalm = 0.5;
-        Double windModerateBreeze = 15.0;
-        Double windHurricane = 150.0;
+        double windCalm = 0.5;
+        double windModerateBreeze = 15.0;
+        double windHurricane = 150.0;
 
         //when
         String calmCategory = WindClassifier.classifyWind(windCalm);

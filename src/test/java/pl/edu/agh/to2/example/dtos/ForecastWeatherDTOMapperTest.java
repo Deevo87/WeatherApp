@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-public class ForecastWeatherDTOMapperTest {
+class ForecastWeatherDTOMapperTest {
 
 
     @Autowired
@@ -31,18 +31,19 @@ public class ForecastWeatherDTOMapperTest {
         String condition =  "not important";
         String stringDate = "2023-12-10 14:05";
         LocalDateTime localDateTime = LocalDateTime.parse(stringDate.replace(" ", "T"));
+        boolean isMud = true;
 
         Weather weather = new Weather(stringDate, temperature, condition, windVelocityInKph, precipitationAmount);
 
         //when
         ForecastWeatherDTO forecastWeatherDTO = forecastWeatherDTOMapper.createForecastWeatherResponse(weather.getDate(),
                 weather.getTemperature(), weather.getFeelsLikeTemperature(), weather.getWindStrength(), weather.getRainStrength(),
-                weather.getSnowStrength(), true);
+                weather.getSnowStrength(), isMud);
 
         //then
         assertEquals("Warm", forecastWeatherDTO.getTemperature());
         assertEquals("Moderate Breeze", forecastWeatherDTO.getWindStrength());
         assertEquals("Light Rain", forecastWeatherDTO.getRainStrength());
         assertEquals(localDateTime, forecastWeatherDTO.getDate());
-
+        assertEquals(isMud, Boolean.valueOf(forecastWeatherDTO.getMud()));
     }}

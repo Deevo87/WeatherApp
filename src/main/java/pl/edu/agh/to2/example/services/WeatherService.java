@@ -8,7 +8,6 @@ import pl.edu.agh.to2.example.DTOs.WeatherDTO;
 import pl.edu.agh.to2.example.DTOs.WeatherDTOMapper;
 import pl.edu.agh.to2.example.exceptions.*;
 import pl.edu.agh.to2.example.model.Weather;
-import pl.edu.agh.to2.example.services.Parser;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -154,9 +153,6 @@ public class WeatherService {
             }
             tripForecast.add(day);
         }
-        System.out.println(
-                tripForecast
-        );
         return tripForecast;
     }
 

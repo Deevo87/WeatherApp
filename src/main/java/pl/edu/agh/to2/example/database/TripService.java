@@ -1,16 +1,17 @@
 package pl.edu.agh.to2.example.database;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TripService {
+    private final TripRepository tripRepository;
     @Autowired
-    private TripRepository tripRepository;
+    public TripService(TripRepository tripRepository) {
+        this.tripRepository = tripRepository;
+    }
 
     public List<Trip> getAllTrips(){
         return tripRepository.findAll();

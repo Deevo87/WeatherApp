@@ -8,13 +8,15 @@ import pl.edu.agh.to2.example.database.Trip;
 import pl.edu.agh.to2.example.database.TripService;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/trips")
 public class TripController {
+    private final TripService tripService;
     @Autowired
-    private TripService tripService;
+    public TripController(TripService tripService) {
+        this.tripService = tripService;
+    }
 
     @GetMapping
     public ResponseEntity<List<Trip>> getAllTrips(){
