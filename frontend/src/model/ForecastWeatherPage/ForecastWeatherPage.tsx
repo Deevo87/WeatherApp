@@ -4,7 +4,7 @@ import "./ForecastWeatherPage.css";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import {GetForecastWeather, GetSavedTrips, SaveTrip} from "../../services/forecastWeatherService";
+import {GetForecastWeather, GetSavedTrips, SaveTrip, DeleteTrip} from "../../services/forecastWeatherService";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
@@ -14,7 +14,9 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import {TabPanelProps} from "../../interfaces/TablePanelProps";
 import {Trip} from "../../interfaces/Trip";
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import {IconButton} from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
 
 function TabPanel(props: TabPanelProps) {
     const {children, value, index, ...other} = props;
@@ -78,7 +80,7 @@ const card = (
 
 export const ForecastWeatherPage = () => {
     const [startLoc, setStartLoc] = useState("");
-    const [destLoc, setDestLoc] = useState("");
+    const [destLoc, setDestLoc] = useState<string[]>([]);
     const [days, setDays] = useState<number>(0);
     const [disabledBtn, setDisabledBtn] = useState(true);
     const [isError, setIsError] = useState(false);
@@ -90,6 +92,10 @@ export const ForecastWeatherPage = () => {
     const [loadingTrips, setLoadingTrips] = useState(true)
     const [value, setValue] = React.useState(0);
     const [savingTrip, setSavingTrip] = useState(false)
+    const [deletingTrip, setDeletingTrip] = useState(false)
+    const [inputList, setInputList] = useState([{id: 0, value: ''}])
+    const [extraDestinations, setExtraDestinations] = useState<[]>([])
+    const [disabledAddBtn, setDisabledAddBtn] = useState(false)
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
@@ -108,23 +114,24 @@ export const ForecastWeatherPage = () => {
                 console.log("Error while getting saved trips " + err);
             })
         setLoadingTrips(false)
-    }, [savingTrip])
+    }, [savingTrip, deletingTrip])
 
     useEffect(() => {
         areBtnsDisabled();
     }, [days, destLoc, startLoc]);
 
+    useEffect(() => {
+        if (inputList.length >= 2) {
+            setDisabledAddBtn(true)
+        } else {
+            setDisabledAddBtn(false)
+        }
+    }, [inputList])
 
     const handleStartLocChange = (event: any) => {
         const value = event.target.value;
         validate(value);
         setStartLoc(value);
-    };
-
-    const handleDestLocChange = (event: any) => {
-        const value = event.target.value;
-        validate(value);
-        setDestLoc(value);
     };
 
     const handleDaysChange = (event: any) => {
@@ -133,7 +140,7 @@ export const ForecastWeatherPage = () => {
     };
 
     const areBtnsDisabled = () => {
-        if (startLoc !== "" && destLoc !== "" && days > 0) {
+        if (startLoc !== "" && destLoc.length > 0 && days > 0) {
             setDisabledBtn(false)
         } else {
             setDisabledBtn(true)
@@ -150,17 +157,17 @@ export const ForecastWeatherPage = () => {
         return true;
     };
 
-    const handleBtnChange = async (event: any) => {
+    const handleSearchBtn = async (event: any) => {
+        updateDestLoc()
+        console.log(destLoc)
         await GetForecastWeather(startLoc, destLoc, days)
             .then((data: any) => {
-                console.log(data)
                 if (data.status === 500) {
                     setStatus(data.status)
                 } else {
                     setStatus(undefined)
                 }
                 setForecastData(data);
-                //console.log(data)
             })
             .catch((err) => {
                 console.log("Error while setting weather in currentWeatherPage " + err);
@@ -168,19 +175,32 @@ export const ForecastWeatherPage = () => {
         setLoadingData(false);
     };
 
+    const updateDestLoc = () => {
+        const updatedLocs = inputList.map((field) => field.value)
+        setDestLoc(updatedLocs)
+    }
+
     const handleSaveBtnChange = async () => {
         const trip: Trip = {
             startLoc: startLoc,
-            destLoc: destLoc,
+            destLocs: destLoc,
             days: days
         }
         await SaveTrip(trip)
         setSavingTrip(!savingTrip)
     }
 
+    const handleDeleteBtn = async (trip: Trip) => {
+        console.log(trip)
+        await DeleteTrip(trip)
+        setDeletingTrip(!deletingTrip)
+    }
+
     const handleSearchSavedBtn = (trip: any) => {
         setStartLoc(trip.startLoc)
         setDestLoc(trip.destLoc)
+        const updatedFields = [{id: 0, value: trip.destLoc}] //TODO jak gosia poprawi backend
+        setInputList(updatedFields);
         setDays(trip.days)
     }
 
@@ -254,23 +274,70 @@ export const ForecastWeatherPage = () => {
                             </p>
                             <p>
                                 Destination location: {trip.destLoc}
+                                {/*TODO jak zostanie poprawiony backend */}
+                                {/*Destination location: {trip.destLoc.join(" -> ")}*/}
                             </p>
                             <p>
                                 Days: {trip.days}
                             </p>
-                            <div className="btn">
-                                <Button
-                                    variant="contained"
+
+                            <div className="savedTripsBtns">
+                                <IconButton
                                     onClick={() => handleSearchSavedBtn(trip)}
                                 >
-                                    Search
-                                </Button>
+                                    <SearchIcon/>
+                                </IconButton>
+                                <IconButton
+                                    onClick={() => handleDeleteBtn(trip)}
+                                >
+                                    <DeleteIcon/>
+                                </IconButton>
                             </div>
                         </TabPanel>
                     ))}
                 </Box>
             </div>
         );
+    }
+
+    const handleAddAnotherDestBtn = () => {
+        setInputList([...inputList, {id: inputList.length, value: ''}])
+    }
+
+    const handleDeleteInputBtn = (id: number) => {
+        if (inputList.length > 1) {
+            const updatedFields = inputList.filter((field) => field.id !== id);
+            setInputList(updatedFields);
+        }
+    }
+
+    const renderInputFields = () => {
+        return (
+            inputList.map((field) => (
+                <div className="destField">
+                    <TextField
+                        key={field.id}
+                        label="Destination"
+                        variant="outlined"
+                        onChange={(event) => handleFieldChange(field.id, event.target.value)}
+                        value={field.value}
+                    />
+                    {field.id !== 0 && (
+                        <IconButton onClick={() => handleDeleteInputBtn(field.id)}>
+                            <DeleteIcon/>
+                        </IconButton>
+                    )}
+                </div>
+            ))
+        )
+    }
+
+    const handleFieldChange = (id: number, value: string) => {
+        validate(value);
+        const updatedFields = inputList.map((field) => (
+            field.id === id ? {...field, value} : field
+        ))
+        setInputList(updatedFields);
     }
 
     return (
@@ -282,22 +349,23 @@ export const ForecastWeatherPage = () => {
                 <div className="inputForm">
                     <p>Choose starting location</p>
                     <TextField
-                        id="outlined-basic"
-                        className="essa"
                         label="Start"
                         variant="outlined"
                         onChange={handleStartLocChange}
                         value={startLoc}
                     />
                     <p>Choose destination location</p>
-                    <TextField
-                        id="outlined-basic"
-                        className="essa"
-                        label="Destination"
-                        variant="outlined"
-                        onChange={handleDestLocChange}
-                        value={destLoc}
-                    />
+                    <div className="addInputBtn">
+                        <Button
+                            variant="contained"
+                            disabled={disabledAddBtn}
+                            onClick={handleAddAnotherDestBtn}
+                        >
+                            Add another destination
+                        </Button>
+                    </div>
+                    {renderInputFields()}
+
                     <p>Trip duration</p>
                     <TextField
                         id="standard-number"
@@ -309,12 +377,21 @@ export const ForecastWeatherPage = () => {
                         value={days}
                     ></TextField>
 
+                    <div className={`${isError ? "displayedAlert" : "disabledAlert"}`}>
+                        <Alert severity="error">
+                            <AlertTitle>Wrong input</AlertTitle>
+                            Please enter a valid city name or valid latitude and longitude (from
+                            -90 to 90 for latitude and -180 to 180 for longitude), separated by a
+                            comma (e.g., 48.8567,2.3508)
+                        </Alert>
+                    </div>
+
                     <div className="buttons">
                         <div className="btn">
                             <Button
                                 disabled={disabledBtn}
                                 variant="contained"
-                                onClick={handleBtnChange}
+                                onClick={handleSearchBtn}
                             >
                                 Search
                             </Button>
@@ -331,14 +408,7 @@ export const ForecastWeatherPage = () => {
                     </div>
                 </div>
             </div>
-            <div className={`${isError ? "displayedAlert" : "disabledAlert"}`}>
-                <Alert severity="error">
-                    <AlertTitle>Wrong input</AlertTitle>
-                    Please enter a valid city name or valid latitude and longitude (from
-                    -90 to 90 for latitude and -180 to 180 for longitude), separated by a
-                    comma (e.g., 48.8567,2.3508)
-                </Alert>
-            </div>
+
             {!loadingData && (renderWeather(forecastData, status))}
         </div>
     );

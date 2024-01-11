@@ -1,5 +1,5 @@
 export interface Trip {
     startLoc: string;
-    destLoc: string;
+    destLocs: string[];
     days: number;
 }

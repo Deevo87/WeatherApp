@@ -25,6 +25,23 @@
   padding-top: 2rem;
 }
 
+.addInputBtn {
+  margin: auto;
+  width: 50%;
+  text-align: center;
+  padding: 0 0 1rem 0;
+}
+
+.destField {
+  width: 100%;
+  padding-top: 1rem;
+  display: flex;
+}
+
+.MuiTextField-root {
+  width: 100%;
+}
+
 .displayForm {
   margin: auto;
   width: 30%;
@@ -85,6 +102,11 @@ TabPanel {
 
 .savedTrips {
   padding-left: 5%;
+}
+
+.savedTripsBtns {
+  margin: auto;
+  text-align: center;
 }
 
 p {

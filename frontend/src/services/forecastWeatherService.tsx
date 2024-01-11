@@ -2,7 +2,7 @@ import {Trip} from "../interfaces/Trip";
 
 export const GetForecastWeather = async (
     startLoc: string,
-    destLoc: string,
+    destLoc: string[],
     days: number
 ): Promise<Array<Array<any>>> => {
     let forecastWeather: any;
@@ -26,8 +26,6 @@ export const GetSavedTrips = async (): Promise<Array<any>> => {
 }
 
 export const SaveTrip = async (trip: Trip) => {
-    console.log(JSON.stringify(trip))
-
     const response = await fetch(`/api/trips`, {
         method: 'POST',
         headers: {
@@ -39,4 +37,19 @@ export const SaveTrip = async (trip: Trip) => {
     if (!response.ok) {
         throw new Error(`HTTP POST error while saving trip! Status: ${response.status}`)
     }
+}
+
+export const DeleteTrip = async (trip: Trip) => {
+   const response = await fetch(`/api/trips`, {
+       method: 'DELETE',
+       headers: {
+           'Content-Type': 'application/json',
+       },
+       body: JSON.stringify(trip)
+   })
+
+    if (!response.ok) {
+        throw new Error(`HTTP POST error while deleting trip! Status: ${response.status}`)
+    }
+
 }
