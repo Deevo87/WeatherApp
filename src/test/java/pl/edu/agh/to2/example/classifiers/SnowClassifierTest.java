@@ -6,17 +6,17 @@ import pl.edu.agh.to2.example.exceptions.SnowClassifyingException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SnowClassifierTest {
+class SnowClassifierTest {
 
     @Test
     void testClassifyRain() throws RainClassifyingException, SnowClassifyingException {
 
         //given
-        Double precipitationAmountVeryLight = 0.5;
-        Double precipitationAmountLight = 4.0;
-        Double precipitationAmountModerate = 8.0;
-        Double precipitationAmountHeavy = 12.0;
-        Double precipitationAmountVeryHeavy = 50.0;
+        double precipitationAmountVeryLight = 0.5;
+        double precipitationAmountLight = 4.0;
+        double precipitationAmountModerate = 8.0;
+        double precipitationAmountHeavy = 12.0;
+        double precipitationAmountVeryHeavy = 50.0;
 
         //when
         String veryLightCategory = SnowClassifier.classifySnow(precipitationAmountVeryLight);

@@ -89,7 +89,7 @@ export const ForecastWeatherPage = () => {
     const [tripsStatus, setTripsStatus] = useState(undefined)
     const [loadingTrips, setLoadingTrips] = useState(true)
     const [value, setValue] = React.useState(0);
-
+    const [savingTrip, setSavingTrip] = useState(false)
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
@@ -99,33 +99,21 @@ export const ForecastWeatherPage = () => {
         /^[a-zA-Z\sżźćńółęąśŻŹĆĄŚĘŁÓŃ-]+$|^-?([0-9]|[1-8][0-9]|90)(\.\d+)?,-?((0|[1-9][0-9]?|1[0-7][0-9]|180)(\.\d+)?|180)$/;
 
     useEffect(() => {
-        // GetSavedTrips()
-        //     .then((data: any) => {
-        //         setSavedTrips(data)
-        //         setTripsStatus(data.status)
-        //     })
-        //     .catch((err) => {
-        //         console.log("Error while getting saved trips " + err);
-        //     })
-        const tmp = [
-            {
-                startLoc: 'Cracow',
-                destLoc: 'Warsaw',
-                days: 2
-            },
-            {
-                startLoc: "Gdańsk",
-                destLoc: "Lublin",
-                days: 1
-            }
-        ]
-        setSavedTrips(tmp)
-        // setLoadingTrips(false)
-    }, [])
+        GetSavedTrips()
+            .then((data: any) => {
+                setSavedTrips(data)
+                setTripsStatus(data.status)
+            })
+            .catch((err) => {
+                console.log("Error while getting saved trips " + err);
+            })
+        setLoadingTrips(false)
+    }, [savingTrip])
 
     useEffect(() => {
         areBtnsDisabled();
     }, [days, destLoc, startLoc]);
+
 
     const handleStartLocChange = (event: any) => {
         const value = event.target.value;
@@ -163,15 +151,16 @@ export const ForecastWeatherPage = () => {
     };
 
     const handleBtnChange = async (event: any) => {
-
         await GetForecastWeather(startLoc, destLoc, days)
             .then((data: any) => {
+                console.log(data)
                 if (data.status === 500) {
                     setStatus(data.status)
                 } else {
                     setStatus(undefined)
                 }
                 setForecastData(data);
+                //console.log(data)
             })
             .catch((err) => {
                 console.log("Error while setting weather in currentWeatherPage " + err);
@@ -185,8 +174,8 @@ export const ForecastWeatherPage = () => {
             destLoc: destLoc,
             days: days
         }
-        console.log(trip)
         await SaveTrip(trip)
+        setSavingTrip(!savingTrip)
     }
 
     const handleSearchSavedBtn = (trip: any) => {
@@ -211,10 +200,10 @@ export const ForecastWeatherPage = () => {
                                         <CardContent>
                                             <Typography variant="h5">Date: {data.date}</Typography>
                                             <Typography variant="body2">
-                                                Preceived Temperature: {data.feelsLikeTemperature}
+                                                Perceived Temperature: {data.feelsLikeTemperature}
                                             </Typography>
                                             <Typography variant="body2">
-                                                Temeperature: {data.temperature}
+                                                Temperature: {data.temperature}
                                             </Typography>
                                             <Typography variant="body2">
                                                 Wind: {data.windStrength}
@@ -224,6 +213,9 @@ export const ForecastWeatherPage = () => {
                                             </Typography>
                                             <Typography variant="body2">
                                                 Rain: {data.rainStrength}
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                Mud: {data.mud}
                                             </Typography>
                                         </CardContent>
                                     </Box>
@@ -285,7 +277,7 @@ export const ForecastWeatherPage = () => {
         <div className="main">
             <div className="searchingForm">
                 <div className="tripContainer">
-                    {loadingTrips && renderTrips()}
+                    {!loadingTrips && renderTrips()}
                 </div>
                 <div className="inputForm">
                     <p>Choose starting location</p>

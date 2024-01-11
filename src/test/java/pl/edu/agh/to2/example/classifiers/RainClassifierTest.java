@@ -8,16 +8,16 @@ import java.awt.image.RasterOp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RainClassifierTest {
+class RainClassifierTest {
 
     @Test
     void testClassifyRain() throws RainClassifyingException {
 
         //given
-        Double precipitationAmountLight = 1.1;
-        Double precipitationAmountModerate = 5.5;
-        Double precipitationAmountHeavy = 8.0;
-        Double precipitationAmountVeryHeavy = 80.0;
+        double precipitationAmountLight = 1.1;
+        double precipitationAmountModerate = 5.5;
+        double precipitationAmountHeavy = 8.0;
+        double precipitationAmountVeryHeavy = 80.0;
 
         //when
         String lightCategory = RainClassifier.classifyRain(precipitationAmountLight);

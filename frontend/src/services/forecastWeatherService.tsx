@@ -11,13 +11,14 @@ export const GetForecastWeather = async (
         .then((response) => response.json())
         .then((data: any) => {
             forecastWeather = data;
+            console.log(forecastWeather)
             return forecastWeather;
         });
 };
 
 export const GetSavedTrips = async (): Promise<Array<any>> => {
 
-    return await fetch(`forecastWeather/`)
+    return await fetch(`/api/trips`)
         .then((response) => response.json())
         .then((data: any) => {
             return data
@@ -25,7 +26,9 @@ export const GetSavedTrips = async (): Promise<Array<any>> => {
 }
 
 export const SaveTrip = async (trip: Trip) => {
-    const response = await fetch(`forecastWeather/saveTrip`, {
+    console.log(JSON.stringify(trip))
+
+    const response = await fetch(`/api/trips`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

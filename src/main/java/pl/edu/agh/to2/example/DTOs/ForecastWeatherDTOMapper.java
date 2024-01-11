@@ -7,14 +7,15 @@ import java.time.LocalDateTime;
 public class ForecastWeatherDTOMapper {
 
     public ForecastWeatherDTO createForecastWeatherResponse(LocalDateTime date, String temperature, double feelsLikeTemperature,
-                                                            String windStrength, String rainStrength, String snowStrength) {
+                                                            String windStrength, String rainStrength, String snowStrength, boolean mud) {
         return new ForecastWeatherDTO(
                 date,
                 temperature,
                 feelsLikeTemperature,
                 windStrength,
                 rainStrength,
-                snowStrength
+                snowStrength,
+                mud
         );
     }
 }
