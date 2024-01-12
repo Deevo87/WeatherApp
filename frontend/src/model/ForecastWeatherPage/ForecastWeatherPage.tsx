@@ -118,9 +118,10 @@ export const ForecastWeatherPage = () => {
 
     useEffect(() => {
         areBtnsDisabled();
-    }, [days, destLoc, startLoc]);
+    }, [days, startLoc, inputList]);
 
     useEffect(() => {
+        updateDestLoc()
         if (inputList.length >= 2) {
             setDisabledAddBtn(true)
         } else {
@@ -140,7 +141,7 @@ export const ForecastWeatherPage = () => {
     };
 
     const areBtnsDisabled = () => {
-        if (startLoc !== "" && destLoc.length > 0 && days > 0) {
+        if (startLoc !== "" && inputList[0].value !== '' && days > 0) {
             setDisabledBtn(false)
         } else {
             setDisabledBtn(true)
@@ -158,8 +159,6 @@ export const ForecastWeatherPage = () => {
     };
 
     const handleSearchBtn = async (event: any) => {
-        updateDestLoc()
-        console.log(destLoc)
         await GetForecastWeather(startLoc, destLoc, days)
             .then((data: any) => {
                 if (data.status === 500) {
