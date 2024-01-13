@@ -79,8 +79,8 @@ const card = (
 );
 
 export const ForecastWeatherPage = () => {
-    const [startLoc, setStartLoc] = useState("");
-    const [destLoc, setDestLoc] = useState<string[]>([]);
+    const [startLoc, setStartLoc] = useState("")
+    const [locations, setLocations] = useState<string[]>([]);
     const [days, setDays] = useState<number>(0);
     const [disabledBtn, setDisabledBtn] = useState(true);
     const [isError, setIsError] = useState(false);
@@ -93,9 +93,9 @@ export const ForecastWeatherPage = () => {
     const [value, setValue] = React.useState(0);
     const [savingTrip, setSavingTrip] = useState(false)
     const [deletingTrip, setDeletingTrip] = useState(false)
-    const [inputList, setInputList] = useState([{id: 0, value: ''}])
-    const [extraDestinations, setExtraDestinations] = useState<[]>([])
+    const [inputList, setInputList] = useState([{id: 0, value: ''}, {id: 1, value: ''}])
     const [disabledAddBtn, setDisabledAddBtn] = useState(false)
+
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
@@ -118,22 +118,16 @@ export const ForecastWeatherPage = () => {
 
     useEffect(() => {
         areBtnsDisabled();
-    }, [days, startLoc, inputList]);
+    }, [days, inputList]);
 
     useEffect(() => {
-        updateDestLoc()
-        if (inputList.length >= 2) {
+        updateLocations()
+        if (inputList.length >= 3) {
             setDisabledAddBtn(true)
         } else {
             setDisabledAddBtn(false)
         }
     }, [inputList])
-
-    const handleStartLocChange = (event: any) => {
-        const value = event.target.value;
-        validate(value);
-        setStartLoc(value);
-    };
 
     const handleDaysChange = (event: any) => {
         let tmp = event.target.value;
@@ -141,7 +135,7 @@ export const ForecastWeatherPage = () => {
     };
 
     const areBtnsDisabled = () => {
-        if (startLoc !== "" && inputList[0].value !== '' && days > 0) {
+        if (inputList[0].value !== '' && inputList[1].value !== '' && days > 0) {
             setDisabledBtn(false)
         } else {
             setDisabledBtn(true)
@@ -159,7 +153,7 @@ export const ForecastWeatherPage = () => {
     };
 
     const handleSearchBtn = async (event: any) => {
-        await GetForecastWeather(startLoc, destLoc, days)
+        await GetForecastWeather(locations, days)
             .then((data: any) => {
                 if (data.status === 500) {
                     setStatus(data.status)
@@ -174,15 +168,14 @@ export const ForecastWeatherPage = () => {
         setLoadingData(false);
     };
 
-    const updateDestLoc = () => {
+    const updateLocations = () => {
         const updatedLocs = inputList.map((field) => field.value)
-        setDestLoc(updatedLocs)
+        setLocations(updatedLocs)
     }
 
     const handleSaveBtnChange = async () => {
         const trip: Trip = {
-            startLoc: startLoc,
-            destLocs: destLoc,
+            locations: locations,
             days: days
         }
         await SaveTrip(trip)
@@ -190,15 +183,18 @@ export const ForecastWeatherPage = () => {
     }
 
     const handleDeleteBtn = async (trip: Trip) => {
-        console.log(trip)
         await DeleteTrip(trip)
         setDeletingTrip(!deletingTrip)
     }
 
     const handleSearchSavedBtn = (trip: any) => {
         setStartLoc(trip.startLoc)
-        setDestLoc(trip.destLoc)
-        const updatedFields = [{id: 0, value: trip.destLoc}] //TODO jak gosia poprawi backend
+        setLocations([trip.locations])
+        //TODO jak gosia poprawi backend, teraz powinno działać ale nie ma jak tego sprawdzić, wpisanie do inputList
+        // powinno automatycznie wpisać mi odpowiednie wartości do pól destiantion, niestety pole start trzeba uzupełniać ręcznie
+        // - powód: wszystkie pola z lablem "destination" renderuje w jednej funkcji a te pole nie pasuje mi żeby było to
+        // tak samo renderowane (słabo wygląda), ogólnie działa
+        const updatedFields = trip.locations.map((location: any, index: number) => ({id: index, value: location[index]}))
         setInputList(updatedFields);
         setDays(trip.days)
     }
@@ -304,29 +300,29 @@ export const ForecastWeatherPage = () => {
     }
 
     const handleDeleteInputBtn = (id: number) => {
-        if (inputList.length > 1) {
-            const updatedFields = inputList.filter((field) => field.id !== id);
-            setInputList(updatedFields);
-        }
+        const updatedFields = inputList.filter((field) => field.id !== id);
+        setInputList(updatedFields);
     }
 
     const renderInputFields = () => {
         return (
             inputList.map((field) => (
-                <div className="destField">
-                    <TextField
-                        key={field.id}
-                        label="Destination"
-                        variant="outlined"
-                        onChange={(event) => handleFieldChange(field.id, event.target.value)}
-                        value={field.value}
-                    />
-                    {field.id !== 0 && (
-                        <IconButton onClick={() => handleDeleteInputBtn(field.id)}>
-                            <DeleteIcon/>
-                        </IconButton>
-                    )}
-                </div>
+                field.id > 0 && (
+                    <div className="destField">
+                        <TextField
+                            key={field.id}
+                            label="Destination"
+                            variant="outlined"
+                            onChange={(event) => handleFieldChange(field.id, event.target.value)}
+                            value={field.value}
+                        />
+                        {field.id > 1 && (
+                            <IconButton onClick={() => handleDeleteInputBtn(field.id)}>
+                                <DeleteIcon/>
+                            </IconButton>
+                        )}
+                    </div>
+                )
             ))
         )
     }
@@ -337,6 +333,9 @@ export const ForecastWeatherPage = () => {
             field.id === id ? {...field, value} : field
         ))
         setInputList(updatedFields);
+        if (id === 0) {
+            setStartLoc(value)
+        }
     }
 
     return (
@@ -350,7 +349,7 @@ export const ForecastWeatherPage = () => {
                     <TextField
                         label="Start"
                         variant="outlined"
-                        onChange={handleStartLocChange}
+                        onChange={(event) => handleFieldChange(0, event.target.value)}
                         value={startLoc}
                     />
                     <p>Choose destination location</p>

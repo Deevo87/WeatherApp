@@ -1,8 +1,13 @@
+.main {
+  padding-top: 2rem;
+}
+
 .chooseCity {
   margin: auto;
   width: 50%;
   text-align: center;
   display: flex;
+  flex-direction: column;
   justify-content: center;
 }
 
