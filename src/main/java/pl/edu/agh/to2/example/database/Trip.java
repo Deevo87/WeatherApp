@@ -5,19 +5,19 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection="trips")
 @Data
 public class Trip {
     @Id
     private ObjectId id;
 
-    private String startLoc;
-    private String destLoc;
+    private List<String> locations;
     private int days;
 
-    public Trip(String startLoc, String destLoc, int days){
-        this.startLoc = startLoc;
-        this.destLoc = destLoc;
+    public Trip(List<String> locations, int days){
+        this.locations = locations;
         this.days = days;
     }
 

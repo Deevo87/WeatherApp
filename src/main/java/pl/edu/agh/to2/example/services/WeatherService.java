@@ -87,15 +87,12 @@ public class WeatherService {
         }
     }
 
-    private List<Weather> makeHourInterval(List<Weather> startLoc, List<Weather> endLoc, int start, int end) {
+    private List<Weather> makeHourInterval(List<List<Weather>> dayOfAllLocations, int start, int end) {
         List<Weather> result = new ArrayList<>();
 
-        result.addAll(
-                startLoc.subList(start, end)
-        );
-        result.addAll(
-                endLoc.subList(start, end)
-        );
+        for(List<Weather> dayOfOneLocation: dayOfAllLocations){
+            result.addAll(dayOfOneLocation.subList(start,end));
+        }
 
         return result;
     }
@@ -131,21 +128,34 @@ public class WeatherService {
         );
     }
 
-    public List<List<ForecastWeatherDTO>> getTripConditions(String startLocation, String destinationLocation, int days) throws Exception {
-        String[] cities = {startLocation, destinationLocation};
-        boolean isMud = isMud(cities);
+    private List<List<Weather>> getDayOfAllLocations( List<List<List<Weather>>> forecastWeatherForLocations, int day){
+        List<List<Weather>> dayOfAllLocations = new ArrayList<>();
 
-        List<List<Weather>> forecastWeatherForStartLoc = getForecastWeather(startLocation, days);
-        List<List<Weather>> forecastWeatherForDestLoc = getForecastWeather(destinationLocation, days);
+        for(List<List<Weather>> daysForLocation: forecastWeatherForLocations){
+            dayOfAllLocations.add(daysForLocation.get(day));
+        }
+
+        return dayOfAllLocations;
+    }
+
+    public List<List<ForecastWeatherDTO>> getTripConditions(List<String> locations, int days) throws Exception {
+        boolean isMud = isMud(locations);
+
+        List<List<List<Weather>>> forecastWeatherOfAllLocations = new ArrayList<>();
         List<List<ForecastWeatherDTO>> tripForecast = new ArrayList<>();
-        for (int i = 0; i < forecastWeatherForDestLoc.size(); i++) {
+
+        for(String location: locations){
+            forecastWeatherOfAllLocations.add(getForecastWeather(location, days));
+        }
+
+        for (int i = 0; i < days; i++) {
             List<ForecastWeatherDTO> day = new ArrayList<>();
+            List<List<Weather>> dayOfAllLocations = getDayOfAllLocations(forecastWeatherOfAllLocations, i);
 
             for (List<Integer> interval: combinedHoursIntervals) {
                 List<Weather> combinedHours;
                 combinedHours = makeHourInterval(
-                        forecastWeatherForStartLoc.get(i),
-                        forecastWeatherForDestLoc.get(i),
+                        dayOfAllLocations,
                         interval.get(0),
                         interval.get(1)
                 );
@@ -156,7 +166,7 @@ public class WeatherService {
         return tripForecast;
     }
 
-    private boolean isMud(String[] cities) throws Exception {
+    private boolean isMud(List<String> cities) throws Exception {
         int days = 2;
         for(int daysBehind = 1; daysBehind < days + 1; daysBehind++) {
             for(String city: cities) {

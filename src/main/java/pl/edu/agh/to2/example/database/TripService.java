@@ -17,8 +17,8 @@ public class TripService {
         return tripRepository.findAll();
     }
 
-    public Trip createTrip(String startLoc, String destLoc, int days){
-        Trip trip = new Trip(startLoc, destLoc, days);
+    public Trip createTrip(List<String> locations, int days){
+        Trip trip = new Trip(locations, days);
         tripRepository.insert(trip);
 
         return trip;
