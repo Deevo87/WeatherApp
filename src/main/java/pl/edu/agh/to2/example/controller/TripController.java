@@ -29,5 +29,10 @@ public class TripController {
         return tripService.createTrip(trip.getLocations(), trip.getDays());
     }
 
+    @DeleteMapping
+    public void deleteTrip(@RequestBody Trip trip){
+        tripService.deleteTrip(trip.getId());
+    }
+
 
 }
