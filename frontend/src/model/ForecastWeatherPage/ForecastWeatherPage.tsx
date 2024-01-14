@@ -188,13 +188,9 @@ export const ForecastWeatherPage = () => {
     }
 
     const handleSearchSavedBtn = (trip: any) => {
-        setStartLoc(trip.startLoc)
+        setStartLoc(trip.locations[0])
         setLocations([trip.locations])
-        //TODO jak gosia poprawi backend, teraz powinno działać ale nie ma jak tego sprawdzić, wpisanie do inputList
-        // powinno automatycznie wpisać mi odpowiednie wartości do pól destiantion, niestety pole start trzeba uzupełniać ręcznie
-        // - powód: wszystkie pola z lablem "destination" renderuje w jednej funkcji a te pole nie pasuje mi żeby było to
-        // tak samo renderowane (słabo wygląda), ogólnie działa
-        const updatedFields = trip.locations.map((location: any, index: number) => ({id: index, value: location[index]}))
+        const updatedFields = trip.locations.map((location: any, index: number) => ({id: index, value: location}))
         setInputList(updatedFields);
         setDays(trip.days)
     }
@@ -265,12 +261,18 @@ export const ForecastWeatherPage = () => {
                     {savedTrips.map((trip: any, tripIndex: number) => (
                         <TabPanel index={tripIndex} value={value}>
                             <p>
-                                Starting location: {trip.startLoc}
+                                Starting location: {trip.locations[0]}
                             </p>
                             <p>
-                                Destination location: {trip.destLoc}
-                                {/*TODO jak zostanie poprawiony backend */}
-                                {/*Destination location: {trip.destLoc.join(" -> ")}*/}
+                                Destination location: <br/>
+                                {trip.locations.map((location: string, index: number) => (
+                                    index > 0 && (
+                                        <React.Fragment key={index}>
+                                            {location}
+                                            {index < trip.locations.length - 1 && <br />}
+                                        </React.Fragment>
+                                    )
+                                ))}
                             </p>
                             <p>
                                 Days: {trip.days}
