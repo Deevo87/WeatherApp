@@ -14,6 +14,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import {TabPanelProps} from "../../interfaces/TablePanelProps";
 import {Trip} from "../../interfaces/Trip";
+import {TripSaved} from "../../interfaces/TripSaved";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {IconButton} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
@@ -182,7 +183,8 @@ export const ForecastWeatherPage = () => {
         setSavingTrip(!savingTrip)
     }
 
-    const handleDeleteBtn = async (trip: Trip) => {
+    const handleDeleteBtn = async (trip: TripSaved) => {
+        console.log(trip)
         await DeleteTrip(trip)
         setDeletingTrip(!deletingTrip)
     }
@@ -269,7 +271,7 @@ export const ForecastWeatherPage = () => {
                                     index > 0 && (
                                         <React.Fragment key={index}>
                                             {location}
-                                            {index < trip.locations.length - 1 && <br />}
+                                            {index < trip.locations.length - 1 && <br/>}
                                         </React.Fragment>
                                     )
                                 ))}

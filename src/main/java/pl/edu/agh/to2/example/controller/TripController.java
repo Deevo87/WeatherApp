@@ -25,7 +25,6 @@ public class TripController {
 
     @PostMapping
     public Trip createTrip(@RequestBody Trip trip){
-
         return tripService.createTrip(trip.getLocations(), trip.getDays());
     }
 
