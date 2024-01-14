@@ -18,9 +18,15 @@ public class TripService {
     }
 
     public Trip createTrip(List<String> locations, int days){
-        Trip trip = new Trip(locations, days);
-        tripRepository.insert(trip);
+        Trip existingTrip = tripRepository.findByLocationsAndDays(locations, days);
 
-        return trip;
+        if (existingTrip != null) {
+            return existingTrip;
+        }
+
+        Trip newTrip = new Trip(locations, days);
+        tripRepository.insert(newTrip);
+
+        return newTrip;
     }
 }
