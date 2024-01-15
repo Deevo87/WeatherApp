@@ -1,4 +1,5 @@
 import {Trip} from "../interfaces/Trip";
+import {TripSaved} from "../interfaces/TripSaved";
 
 export const GetForecastWeather = async (
     locations: string[],
@@ -38,7 +39,7 @@ export const SaveTrip = async (trip: Trip) => {
     }
 }
 
-export const DeleteTrip = async (trip: Trip) => {
+export const DeleteTrip = async (trip: TripSaved) => {
    const response = await fetch(`/api/trips`, {
        method: 'DELETE',
        headers: {
@@ -47,6 +48,7 @@ export const DeleteTrip = async (trip: Trip) => {
        body: JSON.stringify(trip)
    })
 
+    console.log(response)
     if (!response.ok) {
         throw new Error(`HTTP POST error while deleting trip! Status: ${response.status}`)
     }
