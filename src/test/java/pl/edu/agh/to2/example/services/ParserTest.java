@@ -1,6 +1,7 @@
 package pl.edu.agh.to2.example.services;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pl.edu.agh.to2.example.exceptions.RainClassifyingException;
@@ -15,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-public class ParserTest {
+class ParserTest {
 
     @Autowired
     Parser parser;
@@ -40,6 +41,16 @@ public class ParserTest {
         assertEquals(precipitationAmount, weather.getPrecipitationAmount());
         assertEquals(condition, weather.getCondition());
         assertEquals(localDateTime, weather.getDate());
+    }
+
+    @Test
+    void parseHistoryWeatherTest() {
+        int daily_will_it_rain = 0;
+
+        String response = MockResponses.historyWeatherResponse;
+        int will_it_rain = parser.parseMud(response);
+
+        assertEquals(daily_will_it_rain, will_it_rain);
     }
 
     @Test

@@ -12,6 +12,8 @@ import pl.edu.agh.to2.example.model.Weather;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,6 +61,19 @@ public class WeatherService {
         return this.parser.parseForecastWeather(getWeatherResponse(url));
     }
 
+    private boolean getHistoryWeather(String city, int daysBefore) throws Exception {
+        String endpoint = "/history.json";
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate beforeDate = currentDate.minusDays(daysBefore);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String before = beforeDate.format(formatter);
+
+        String url = this.basicUrl + endpoint + "?key=" + this.apiKey + "&q=" + city + "&dt=" + before;
+        return this.parser.parseMud(getWeatherResponse(url)) != 0;
+    }
+
     private String getWeatherResponse(String url) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(java.net.URI.create(url))
@@ -72,20 +87,17 @@ public class WeatherService {
         }
     }
 
-    private List<Weather> makeHourInterval(List<Weather> startLoc, List<Weather> endLoc, int start, int end) {
+    private List<Weather> makeHourInterval(List<List<Weather>> dayOfAllLocations, int start, int end) {
         List<Weather> result = new ArrayList<>();
 
-        result.addAll(
-                startLoc.subList(start, end)
-        );
-        result.addAll(
-                endLoc.subList(start, end)
-        );
+        for(List<Weather> dayOfOneLocation: dayOfAllLocations){
+            result.addAll(dayOfOneLocation.subList(start,end));
+        }
 
         return result;
     }
 
-    private ForecastWeatherDTO combineWeathers(List<Weather> weathers) throws RainClassifyingException, SnowClassifyingException, WindClassifyingException, TemperatureException {
+    private ForecastWeatherDTO combineWeathers(List<Weather> weathers, boolean mud) throws RainClassifyingException, SnowClassifyingException, WindClassifyingException, TemperatureException {
         String worstRain = weathers.get(3).getRainStrength();
         double lowestFeelsLikeTemp = weathers.get(3).getFeelsLikeTemperature();
         double lowestTemp = weathers.get(3).getTemperatureDouble();
@@ -111,29 +123,58 @@ public class WeatherService {
                 lowestFeelsLikeTemp,
                 classifyWind(worstWind),
                 worstRain,
-                worstSnow
+                worstSnow,
+                mud
         );
     }
 
-    public List<List<ForecastWeatherDTO>> getTripConditions(String startLocation, String destinationLocation, int days) throws Exception {
-        List<List<Weather>> forecastWeatherForStartLoc = getForecastWeather(startLocation, days);
-        List<List<Weather>> forecastWeatherForDestLoc = getForecastWeather(destinationLocation, days);
+    private List<List<Weather>> getDayOfAllLocations( List<List<List<Weather>>> forecastWeatherForLocations, int day){
+        List<List<Weather>> dayOfAllLocations = new ArrayList<>();
+
+        for(List<List<Weather>> daysForLocation: forecastWeatherForLocations){
+            dayOfAllLocations.add(daysForLocation.get(day));
+        }
+
+        return dayOfAllLocations;
+    }
+
+    public List<List<ForecastWeatherDTO>> getTripConditions(List<String> locations, int days) throws Exception {
+        boolean isMud = isMud(locations);
+
+        List<List<List<Weather>>> forecastWeatherOfAllLocations = new ArrayList<>();
         List<List<ForecastWeatherDTO>> tripForecast = new ArrayList<>();
-        for (int i = 0; i < forecastWeatherForDestLoc.size(); i++) {
+
+        for(String location: locations){
+            forecastWeatherOfAllLocations.add(getForecastWeather(location, days));
+        }
+
+        for (int i = 0; i < days; i++) {
             List<ForecastWeatherDTO> day = new ArrayList<>();
+            List<List<Weather>> dayOfAllLocations = getDayOfAllLocations(forecastWeatherOfAllLocations, i);
 
             for (List<Integer> interval: combinedHoursIntervals) {
                 List<Weather> combinedHours;
                 combinedHours = makeHourInterval(
-                        forecastWeatherForStartLoc.get(i),
-                        forecastWeatherForDestLoc.get(i),
+                        dayOfAllLocations,
                         interval.get(0),
                         interval.get(1)
                 );
-                day.add(combineWeathers(combinedHours));
+                day.add(combineWeathers(combinedHours, isMud));
             }
             tripForecast.add(day);
         }
         return tripForecast;
+    }
+
+    private boolean isMud(List<String> cities) throws Exception {
+        int days = 2;
+        for(int daysBehind = 1; daysBehind < days + 1; daysBehind++) {
+            for(String city: cities) {
+                if (getHistoryWeather(city, daysBehind)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

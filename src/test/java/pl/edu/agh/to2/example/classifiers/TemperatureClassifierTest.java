@@ -6,7 +6,7 @@ import pl.edu.agh.to2.example.exceptions.TemperatureException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TemperatureClassifierTest {
+class TemperatureClassifierTest {
 
     @Test
     void testClassifyRain() throws RainClassifyingException, TemperatureException {

@@ -17,8 +17,13 @@ public class ForecastWeatherController {
         this.weatherService = weatherService;
     }
 
-    @GetMapping({"forecastWeather/{startLocation}/{destLocation}/{days}"})
-    public List<List<ForecastWeatherDTO>> getForecastWeather(@PathVariable String startLocation, @PathVariable String destLocation, @PathVariable int days) throws Exception {
-        return weatherService.getTripConditions(startLocation, destLocation, days);
+//    @GetMapping({"forecastWeather/{startLocation}/{destLocation}/{days}"})
+//    public List<List<ForecastWeatherDTO>> getForecastWeather(@PathVariable String startLocation, @PathVariable String destLocation, @PathVariable int days) throws Exception {
+//        return weatherService.getTripConditions(startLocation, destLocation, days);
+//    }
+
+    @GetMapping({"forecastWeather/{locations}/{days}"})
+    public List<List<ForecastWeatherDTO>> getForecastWeather( @PathVariable List<String> locations, @PathVariable int days) throws Exception {
+        return weatherService.getTripConditions(locations, days);
     }
 }

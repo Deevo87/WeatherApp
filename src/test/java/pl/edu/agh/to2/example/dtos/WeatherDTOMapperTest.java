@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-public class WeatherDTOMapperTest {
+class WeatherDTOMapperTest {
 
     @Autowired
     WeatherDTOMapper weatherDTOMapper;

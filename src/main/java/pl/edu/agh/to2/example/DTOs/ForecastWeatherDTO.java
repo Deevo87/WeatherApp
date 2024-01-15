@@ -9,15 +9,17 @@ public class ForecastWeatherDTO {
     private final String windStrength;
     private final String rainStrength;
     private final String snowStrength;
+    private final String mud;
 
 
-    public ForecastWeatherDTO(LocalDateTime date, String temperature, double feelsLikeTemperature, String windStrength, String rainStrength, String snowStrenght) {
+    public ForecastWeatherDTO(LocalDateTime date, String temperature, double feelsLikeTemperature, String windStrength, String rainStrength, String snowStrength, boolean mud) {
         this.date = date;
         this.temperature = temperature;
         this.feelsLikeTemperature = feelsLikeTemperature;
         this.windStrength = windStrength;
         this.rainStrength = rainStrength;
-        this.snowStrength = snowStrenght;
+        this.snowStrength = snowStrength;
+        this.mud = Boolean.toString(mud);
     }
 
     public LocalDateTime getDate() {
@@ -43,4 +45,6 @@ public class ForecastWeatherDTO {
     public String getSnowStrength() {
         return snowStrength;
     }
+
+    public String getMud() {return mud;}
 }

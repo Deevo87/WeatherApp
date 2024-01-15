@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class WeatherTest {
+class WeatherTest {
 
     @Test
     void testCreation() {
