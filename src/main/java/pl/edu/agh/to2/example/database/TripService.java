@@ -25,7 +25,7 @@ public class TripService {
         return trip;
     }
 
-    public void deleteTrip(ObjectId id){
+    public void deleteTrip(String id){
         tripRepository.deleteById(id);
     }
 }

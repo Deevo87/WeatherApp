@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class Trip {
     @Id
-    private ObjectId id;
+    private String id;
 
     private List<String> locations;
     private int days;
